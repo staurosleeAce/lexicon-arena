@@ -85,7 +85,7 @@ h1{font-size:2rem;text-align:center;margin-bottom:8px;background:linear-gradient
         題目會給出單字的 <strong>定義</strong>、<strong>同義詞</strong> 或 <strong>反義詞</strong>，<br>
         從四個選項中選出正確答案。<br>
         答對扣對手 HP，答錯你失去一條命。<br>
-        <span style="color:#f5576c">擊敗全部 9 位挑戰者，隱藏 BOSS 將現身！</span>
+        <span style="color:#f5576c">自由選擇對手！擊敗全部 9 位解鎖隱藏 BOSS 史丹利！</span>
       </p>
     </div>
     <button class="btn" onclick="startGame()">開始挑戰</button>
@@ -229,7 +229,7 @@ const TIME_LIMIT = 15;
 let state = {
   screen:'start',
   cleared:[],
-  unlocked:1,
+  bossUnlocked:false,
   currentChar:null,
   isBoss:false,
   lives:MAX_LIVES,
@@ -257,7 +257,7 @@ function getWordBank(diff){
 
 function startGame(){
   state.cleared=[];
-  state.unlocked=1;
+  state.bossUnlocked=false;
   state.totalCleared=0;
   showCharSelect();
 }
@@ -271,25 +271,16 @@ function showCharSelect(){
 function renderCharGrid(){
   const grid=document.getElementById('charGrid');
   let html='';
-  const allChars=[...CHARACTERS];
-  const bossUnlocked=state.unlocked>9;
-  if(bossUnlocked)allChars.push(BOSS);
+  const allChars=[...CHARACTERS,BOSS];
   allChars.forEach(c=>{
+    const isBoss=c.id===BOSS.id;
     const isCleared=state.cleared.includes(c.id);
-    const isLocked=state.unlocked<=CHARACTERS.findIndex(ch=>ch.id===c.id) && !bossUnlocked;
-    const isCurrent=state.unlocked-1===CHARACTERS.findIndex(ch=>ch.id===c.id)||(c.id===BOSS.id&&bossUnlocked);
-    const canSelect=!isLocked && !isCleared && (isCurrent || state.cleared.length>0);
+    const isLocked=isBoss && state.cleared.length<9;
     const cls=['char-card'];
     if(isCleared)cls.push('cleared');
-    if(isLocked && !isCleared)cls.push('locked');
-    if(c.id===BOSS.id)html+=`<div class="${cls.join(' ')}" onclick="selectChar('${c.id}')">
-      <span class="boss-badge">BOSS</span>
-      <span class="emoji">${c.emoji}</span>
-      <div class="name">${c.name}</div>
-      <div class="title">${c.title}</div>
-      <div class="hp-text">HP ${c.hp}</div>
-    </div>`;
-    else html+=`<div class="${cls.join(' ')}" onclick="selectChar('${c.id}')">
+    if(isLocked)cls.push('locked');
+    html+=`<div class="${cls.join(' ')}" onclick="selectChar('${c.id}')">
+      ${isBoss?'<span class="boss-badge">BOSS</span>':''}
       <span class="emoji">${c.emoji}</span>
       <div class="name">${c.name}</div>
       <div class="title">${c.title}</div>
@@ -303,8 +294,7 @@ function selectChar(id){
   const allChars=[...CHARACTERS,BOSS];
   const char=allChars.find(c=>c.id===id);
   if(!char)return;
-  const charIdx=CHARACTERS.findIndex(c=>c.id===id);
-  if(charIdx>=0 && state.unlocked<=charIdx && state.cleared.length<9)return;
+  if(char.id===BOSS.id && state.cleared.length<9)return;
   if(state.cleared.includes(id))return;
   startBattle(char);
 }
@@ -436,21 +426,15 @@ function showWin(){
   state.totalCleared++;
   if(!state.cleared.includes(state.currentChar.id))state.cleared.push(state.currentChar.id);
   const extra=document.getElementById('resultExtra');
-  const allChars=[...CHARACTERS];
-  const currentIdx=allChars.findIndex(c=>c.id===state.currentChar.id);
-  if(currentIdx>=0 && currentIdx+1<allChars.length && !state.cleared.includes(allChars[currentIdx+1].id)){
-    state.unlocked=Math.max(state.unlocked,currentIdx+2);
-    const next=allChars[currentIdx+1];
-    extra.innerHTML=`<div class="unlock-msg">🔓 解鎖新對手：${next.emoji} ${next.name}</div>`;
-  }else if(state.cleared.length>=9 && !state.cleared.includes(BOSS.id)){
-    extra.innerHTML=`<div class="unlock-msg boss-reveal">🦹 隱藏 BOSS 【史丹利】 現身了！！</div>`;
-    state.unlocked=10;
+  if(state.cleared.length>=9 && !state.cleared.includes(BOSS.id)){
+    extra.innerHTML=`<div class="unlock-msg boss-reveal">🦹 隱藏 BOSS 【史丹利】 現身了！！快去挑戰他！</div>`;
+    state.bossUnlocked=true;
   }else if(state.cleared.includes(BOSS.id)){
     extra.innerHTML=`<div class="unlock-msg">🏆 你擊敗了所有人！真正的詞彙大師！</div>`;
   }else{
     extra.innerHTML='';
   }
-  document.getElementById('resultBtn').textContent=state.unlocked>9?'挑戰 BOSS':'繼續';
+  document.getElementById('resultBtn').textContent=state.bossUnlocked?'挑戰 BOSS':'繼續';
 }
 
 function showLose(){
@@ -481,7 +465,7 @@ function showVictory(){
 
 function resetGame(){
   clearInterval(state.timer);
-  state={screen:'start',cleared:[],unlocked:1,currentChar:null,isBoss:false,lives:MAX_LIVES,roundNum:0,questions:[],answered:false,timer:null,timeLeft:TIME_LIMIT,totalCleared:0};
+  state={screen:'start',cleared:[],bossUnlocked:false,currentChar:null,isBoss:false,lives:MAX_LIVES,roundNum:0,questions:[],answered:false,timer:null,timeLeft:TIME_LIMIT,totalCleared:0};
   showScreen('screen-start');
 }
 </script>
