@@ -3,591 +3,522 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lexicon Arena 詞彙競技場</title>
+<title>Lexicon Arena</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Noto Sans TC',sans-serif}
 body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
-.container{width:100%;max-width:640px}
-.screen{display:none;background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);border-radius:24px;padding:32px;border:1px solid rgba(255,255,255,0.1);color:#fff;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
-.screen.active{display:block}
+.c{width:100%;max-width:640px}
+.s{display:none;background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);border-radius:24px;padding:32px;border:1px solid rgba(255,255,255,0.1);color:#fff;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.s.on{display:block}
 h1{font-size:2rem;text-align:center;margin-bottom:8px;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.subtitle{text-align:center;color:rgba(255,255,255,0.6);margin-bottom:24px;font-size:0.95rem}
-.btn{background:linear-gradient(135deg,#667eea,#764ba2);border:none;color:#fff;padding:14px 32px;border-radius:12px;font-size:1.1rem;cursor:pointer;transition:transform .2s,box-shadow .2s;font-weight:600;width:100%}
+.st{text-align:center;color:rgba(255,255,255,0.6);margin-bottom:24px;font-size:0.95rem}
+.btn{background:linear-gradient(135deg,#667eea,#764ba2);border:none;color:#fff;padding:14px 32px;border-radius:12px;font-size:1.1rem;cursor:pointer;transition:transform .2s;font-weight:600;width:100%}
 .btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(102,126,234,0.4)}
-.btn-sm{padding:10px 20px;font-size:0.9rem;width:auto}
-.btn-secondary{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2)}
-.btn-secondary:hover{background:rgba(255,255,255,0.2);box-shadow:none}
-.character-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
-.char-card{background:rgba(255,255,255,0.08);border-radius:16px;padding:16px 8px;text-align:center;cursor:pointer;transition:all .3s;border:2px solid transparent;position:relative}
-.char-card:hover:not(.locked):not(.cleared){background:rgba(255,255,255,0.15);transform:translateY(-4px)}
-.char-card.locked{opacity:0.4;cursor:not-allowed}
-.char-card.cleared{opacity:0.5;border-color:#4caf50}
-.char-card.cleared::after{content:"✓";position:absolute;top:6px;right:10px;color:#4caf50;font-weight:bold;font-size:1.2rem}
-.char-card .emoji{font-size:2.4rem;display:block;margin-bottom:4px}
-.char-card .name{font-size:0.85rem;font-weight:600}
-.char-card .title{font-size:0.65rem;color:rgba(255,255,255,0.5);margin-top:2px}
-.char-card .hp-text{font-size:0.6rem;color:rgba(255,255,255,0.4);margin-top:4px}
-.boss-badge{background:linear-gradient(135deg,#f093fb,#f5576c);font-size:0.5rem;padding:2px 8px;border-radius:20px;position:absolute;top:-6px;right:-6px;font-weight:700;color:#fff}
-/* Intro Screen */
-.intro-display{text-align:center;margin-bottom:20px}
-.intro-display .big-emoji{font-size:5rem;display:block;margin-bottom:8px}
-.intro-display .name{font-size:1.5rem;font-weight:700}
-.intro-display .title{font-size:0.85rem;color:rgba(255,255,255,0.5);margin-top:2px}
-.intro-display .hp{font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:4px}
-.dialogue-box{background:rgba(255,255,255,0.04);border-left:4px solid #667eea;border-radius:12px;padding:16px;margin-bottom:20px}
-.dialogue-box .speaker{font-size:0.7rem;color:rgba(255,255,255,0.3);margin-bottom:6px}
-.dialogue-box .words{font-size:1rem;line-height:1.6;color:rgba(255,255,255,0.85)}
-.diff-select{display:flex;gap:10px;margin-bottom:20px}
-.diff-card{flex:1;background:rgba(255,255,255,0.06);border-radius:14px;padding:16px 8px;text-align:center;cursor:pointer;border:2px solid transparent;transition:all .3s}
-.diff-card:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-3px)}
-.diff-card.selected{border-color:#667eea;background:rgba(102,126,234,0.15)}
-.diff-card .diff-icon{font-size:1.6rem;display:block;margin-bottom:4px}
-.diff-card .diff-name{font-size:0.9rem;font-weight:600;margin-bottom:2px}
-.diff-card .diff-desc{font-size:0.6rem;color:rgba(255,255,255,0.5)}
-/* Battle */
-.battle-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.opponent-info{text-align:center;flex:1}
-.opponent-info .emoji{font-size:3rem;display:block}
-.opponent-info .name{font-size:1.2rem;font-weight:700;margin-top:4px}
-.opponent-info .title{font-size:0.75rem;color:rgba(255,255,255,0.5)}
-.hp-section{flex:1;text-align:center}
-.hp-label{font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:4px}
-.hp-bar-wrap{background:rgba(255,255,255,0.1);border-radius:10px;height:16px;overflow:hidden;position:relative}
-.hp-bar{height:100%;border-radius:10px;transition:width .5s ease;background:linear-gradient(90deg,#f5576c,#ff6b6b)}
-.hp-text-num{font-size:0.7rem;margin-top:2px}
-.vs-text{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 12px}
-.player-status{display:flex;justify-content:center;gap:6px;margin-top:12px}
-.heart{font-size:1.3rem;transition:all .3s}
-.heart.lost{opacity:0.2;transform:scale(0.8)}
-.question-area{background:rgba(255,255,255,0.05);border-radius:16px;padding:18px;margin-bottom:14px;text-align:center}
-.q-type{font-size:0.7rem;color:rgba(255,255,255,0.35);letter-spacing:1px;margin-bottom:6px}
-.q-text{font-size:1rem;line-height:1.6;margin-bottom:4px}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.choice{background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:all .2s;font-size:0.9rem;color:#fff}
-.choice:hover{background:rgba(255,255,255,0.15);border-color:#667eea}
-.choice.correct{background:rgba(76,175,80,0.3);border-color:#4caf50;animation:pulse .4s}
-.choice.wrong{background:rgba(244,67,54,0.3);border-color:#f44336;animation:shake .4s}
-.choice:disabled{cursor:not-allowed;opacity:0.7}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
-@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.progress-text{font-size:0.8rem;color:rgba(255,255,255,0.4)}
-.timer-bar{height:4px;background:rgba(255,255,255,0.1);border-radius:4px;margin-bottom:10px;overflow:hidden}
-.timer-bar-inner{height:100%;background:linear-gradient(90deg,#667eea,#f5576c);border-radius:4px;transition:width 1s linear;width:100%}
-.taunt-box{background:rgba(255,255,255,0.03);border-left:3px solid #f5576c;border-radius:8px;padding:10px 14px;margin-bottom:12px;animation:fadeIn .3s}
-.taunt-box .taunt-speaker{font-size:0.65rem;color:rgba(255,255,255,0.25);margin-bottom:2px}
-.taunt-box .taunt-text{font-size:0.9rem;color:rgba(255,255,255,0.75);font-style:italic}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.result-screen{text-align:center;padding:20px 0}
-.result-screen .big-emoji{font-size:5rem;display:block;margin-bottom:12px}
-.result-screen .result-title{font-size:1.6rem;font-weight:700;margin-bottom:8px}
-.result-screen .result-sub{color:rgba(255,255,255,0.6);margin-bottom:16px}
-.unlock-msg{background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.3);border-radius:12px;padding:12px;margin-bottom:16px;font-size:0.9rem;animation:glow 1.5s infinite alternate}
-@keyframes glow{from{box-shadow:0 0 8px rgba(255,193,7,0.2)}to{box-shadow:0 0 20px rgba(255,193,7,0.4)}}
-.btn-group{display:flex;gap:10px;flex-wrap:wrap}
-.btn-group .btn{flex:1;min-width:120px}
-.boss-reveal{animation:bossReveal 1s ease}
-@keyframes bossReveal{0%{transform:scale(0) rotate(-180deg);opacity:0}60%{transform:scale(1.2) rotate(10deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
-.char-taunt{font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:6px;font-style:italic}
+.btn2{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2)}
+.btn2:hover{background:rgba(255,255,255,0.2);box-shadow:none}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.cc{background:rgba(255,255,255,0.08);border-radius:16px;padding:16px 8px;text-align:center;cursor:pointer;transition:all .3s;border:2px solid transparent;position:relative}
+.cc:hover:not(.lk):not(.cl){background:rgba(255,255,255,0.15);transform:translateY(-4px)}
+.cc.lk{opacity:0.4;cursor:not-allowed}
+.cc.cl{opacity:0.5;border-color:#4caf50}
+.cc.cl:after{content:"✓";position:absolute;top:6px;right:10px;color:#4caf50;font-weight:bold;font-size:1.2rem}
+.cc .e{font-size:2.4rem;display:block;margin-bottom:4px}
+.cc .n{font-size:0.85rem;font-weight:600}
+.cc .t{font-size:0.65rem;color:rgba(255,255,255,0.5);margin-top:2px}
+.cc .h{font-size:0.6rem;color:rgba(255,255,255,0.4)}
+.bb{background:linear-gradient(135deg,#f093fb,#f5576c);font-size:0.5rem;padding:2px 8px;border-radius:20px;position:absolute;top:-6px;right:-6px;font-weight:700;color:#fff}
+.ds{display:flex;gap:10px;margin-bottom:20px}
+.dc{flex:1;background:rgba(255,255,255,0.06);border-radius:14px;padding:16px 8px;text-align:center;cursor:pointer;border:2px solid transparent;transition:all .3s}
+.dc:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-3px)}
+.dc.sl{border-color:#667eea;background:rgba(102,126,234,0.15)}
+.dc .di{font-size:1.6rem;display:block;margin-bottom:4px}
+.dc .dn{font-size:0.9rem;font-weight:600}
+.dc .dd{font-size:0.6rem;color:rgba(255,255,255,0.5)}
+.bh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.oi{text-align:center;flex:1}
+.oi .e{font-size:3rem;display:block}
+.oi .n{font-size:1.2rem;font-weight:700;margin-top:4px}
+.oi .t{font-size:0.75rem;color:rgba(255,255,255,0.5)}
+.vs{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 12px}
+.hw{background:rgba(255,255,255,0.1);border-radius:10px;height:16px;overflow:hidden;position:relative}
+.hb{height:100%;border-radius:10px;transition:width .5s ease;background:linear-gradient(90deg,#f5576c,#ff6b6b)}
+.ht{font-size:0.7rem;margin-top:2px}
+.ps{display:flex;justify-content:center;gap:6px;margin-top:12px}
+.he{font-size:1.3rem;transition:all .3s}
+.he.lo{opacity:0.2;transform:scale(0.8)}
+.qa{background:rgba(255,255,255,0.05);border-radius:16px;padding:18px;margin-bottom:14px;text-align:center}
+.qt{font-size:0.7rem;color:rgba(255,255,255,0.35);margin-bottom:6px}
+.qx{font-size:1rem;line-height:1.6}
+.ch{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.chc{background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:all .2s;font-size:0.9rem;color:#fff}
+.chc:hover{background:rgba(255,255,255,0.15);border-color:#667eea}
+.chc.cr{background:rgba(76,175,80,0.3);border-color:#4caf50}
+.chc.wr{background:rgba(244,67,54,0.3);border-color:#f44336}
+.chc:disabled{cursor:not-allowed;opacity:0.7}
+.tb{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.tx{font-size:0.8rem;color:rgba(255,255,255,0.4)}
+.tm{height:4px;background:rgba(255,255,255,0.1);border-radius:4px;margin-bottom:10px;overflow:hidden}
+.tmi{height:100%;background:linear-gradient(90deg,#667eea,#f5576c);border-radius:4px;transition:width 1s linear;width:100%}
+.ta{background:rgba(255,255,255,0.03);border-left:3px solid #f5576c;border-radius:8px;padding:10px 14px;margin-bottom:12px}
+.ta .ts{font-size:0.65rem;color:rgba(255,255,255,0.25);margin-bottom:2px}
+.ta .tt{font-size:0.9rem;color:rgba(255,255,255,0.75);font-style:italic}
+.rs{text-align:center;padding:20px 0}
+.rs .be{font-size:5rem;display:block;margin-bottom:12px}
+.rs .rt{font-size:1.6rem;font-weight:700;margin-bottom:8px}
+.rs .rs2{color:rgba(255,255,255,0.6);margin-bottom:16px}
+.um{background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.3);border-radius:12px;padding:12px;margin-bottom:16px;font-size:0.9rem}
+.bg{display:flex;gap:10px;flex-wrap:wrap}
+.bg .btn{flex:1;min-width:120px}
+.hps{text-align:center;flex:1}
+.hpl{font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:4px}
+.fb{font-size:0.75rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:4px}
+.ct{font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:6px;font-style:italic}
 </style>
 </head>
 <body>
-<div class="container" id="app">
-  <div class="screen active" id="screen-start">
-    <h1>⚔️ Lexicon Arena</h1>
-    <p class="subtitle">情境英文競技場 — 挑選對手、選擇難度、證明你的英文實力！</p>
+<div class="c">
+  <div class="s on" id="s0">
+    <h1>Lexicon Arena</h1>
+    <p class="st">情境英文競技場</p>
     <div style="text-align:center;margin-bottom:24px">
       <div style="font-size:4rem;margin-bottom:12px">🌍</div>
       <p style="color:rgba(255,255,255,0.7);font-size:0.95rem;line-height:1.7">
-        題目是真實生活情境（餐廳、旅行、職場、購物...），<br>
-        選出最適合的英文回應。<br>
-        每位對手都有獨特的語氣和個性！<br>
-        <span style="color:#f5576c">擊敗全部 9 位解鎖 BOSS 史丹利 😏</span>
+        選對手、選難度、回答生活情境題！<br>
+        擊敗全部 9 人解鎖 BOSS 史丹利
       </p>
     </div>
-    <button class="btn" onclick="showCharSelect()">開始挑戰</button>
+    <button class="btn" id="btnStart">開始挑戰</button>
   </div>
 
-  <div class="screen" id="screen-char">
-    <h1>👥 選擇對手</h1>
-    <p class="subtitle" id="charSubtitle">點選對手，然後選擇難度開始對戰</p>
-    <div class="character-grid" id="charGrid"></div>
-    <button class="btn btn-secondary" onclick="showStart()">← 返回</button>
+  <div class="s" id="s1">
+    <h1>選擇對手</h1>
+    <p class="st" id="s1t">點選對手開始對戰</p>
+    <div class="grid" id="grid"></div>
+    <button class="btn btn2" onclick="show(0)">返回</button>
   </div>
 
-  <div class="screen" id="screen-intro">
-    <div class="intro-display">
-      <span class="big-emoji" id="introEmoji">🔔</span>
-      <div class="name" id="introName">叮噹哥</div>
-      <div class="title" id="introTitle">稱號</div>
-      <div class="hp" id="introHp">HP 3</div>
+  <div class="s" id="s2">
+    <div style="text-align:center;margin-bottom:20px">
+      <span style="font-size:5rem;display:block;margin-bottom:8px" id="ie"></span>
+      <div style="font-size:1.5rem;font-weight:700" id="in"></div>
+      <div style="font-size:0.85rem;color:rgba(255,255,255,0.5)" id="it"></div>
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:4px" id="ih"></div>
     </div>
-    <div class="dialogue-box">
-      <div class="speaker">💬 對方說話了：</div>
-      <div class="words" id="introDialogue">來吧！</div>
+    <div style="background:rgba(255,255,255,0.04);border-left:4px solid #667eea;border-radius:12px;padding:16px;margin-bottom:20px">
+      <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);margin-bottom:6px">對方說話了：</div>
+      <div style="font-size:1rem;line-height:1.6;color:rgba(255,255,255,0.85)" id="iw"></div>
     </div>
-    <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:10px">選擇難度開始對戰</p>
-    <div class="diff-select">
-      <div class="diff-card" onclick="pickDifficulty('easy')" id="intro-diff-easy">
-        <span class="diff-icon">🌱</span>
-        <div class="diff-name">簡單</div>
-        <div class="diff-desc">基礎生活會話</div>
-      </div>
-      <div class="diff-card" onclick="pickDifficulty('medium')" id="intro-diff-medium">
-        <span class="diff-icon">🔥</span>
-        <div class="diff-name">中等</div>
-        <div class="diff-desc">職場旅遊社交</div>
-      </div>
-      <div class="diff-card" onclick="pickDifficulty('hard')" id="intro-diff-hard">
-        <span class="diff-icon">💀</span>
-        <div class="diff-name">困難</div>
-        <div class="diff-desc">俚語文化片語</div>
-      </div>
+    <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:10px">選擇難度</p>
+    <div class="ds">
+      <div class="dc sl" onclick="pd(0)" id="de"><span class="di">🌱</span><div class="dn">簡單</div><div class="dd">基礎生活</div></div>
+      <div class="dc" onclick="pd(1)" id="dm"><span class="di">🔥</span><div class="dn">中等</div><div class="dd">職場社交</div></div>
+      <div class="dc" onclick="pd(2)" id="dh"><span class="di">💀</span><div class="dn">困難</div><div class="dd">俚語文化</div></div>
     </div>
-    <button class="btn" onclick="startBattleWithDiff()">⚔️ 開始對戰</button>
-    <button class="btn btn-secondary" onclick="showCharSelect()" style="margin-top:8px">← 返回選單</button>
+    <button class="btn" id="btnFight">開始對戰</button>
+    <button class="btn btn2" style="margin-top:8px" onclick="show(1)">返回</button>
   </div>
 
-  <div class="screen" id="screen-battle">
-    <div class="top-bar">
-      <span class="progress-text" id="progressText">第 1 / 5 題</span>
-      <span style="font-size:0.8rem;color:rgba(255,255,255,0.4)">⏱ <span id="timerDisplay">15</span>s</span>
+  <div class="s" id="s3">
+    <div class="tb">
+      <span class="tx" id="pt">第 1 / 5 題</span>
+      <span class="tx">⏱ <span id="td">15</span>s</span>
     </div>
-    <div class="timer-bar"><div class="timer-bar-inner" id="timerBar" style="width:100%"></div></div>
-    <div id="tauntArea"></div>
-    <div class="battle-header">
-      <div class="player-status" id="playerHearts"></div>
-      <div class="vs-text">⚡</div>
-      <div class="opponent-info">
-        <span class="emoji" id="battleEmoji">😈</span>
-        <div class="name" id="battleName">對手</div>
-        <div class="title" id="battleTitle">稱號</div>
+    <div class="tm"><div class="tmi" id="tbar"></div></div>
+    <div id="ta"></div>
+    <div class="bh">
+      <div class="ps" id="ph"></div>
+      <div class="vs">⚡</div>
+      <div class="oi">
+        <span class="e" id="be"></span>
+        <div class="n" id="bn"></div>
+        <div class="t" id="bt"></div>
       </div>
     </div>
-    <div class="hp-section">
-      <div class="hp-label">對手 HP</div>
-      <div class="hp-bar-wrap"><div class="hp-bar" id="enemyHpBar" style="width:100%"></div></div>
-      <div class="hp-text-num" id="enemyHpText">10 / 10</div>
+    <div class="hps">
+      <div class="hpl">對手 HP</div>
+      <div class="hw"><div class="hb" id="ehb"></div></div>
+      <div class="ht" id="eht"></div>
     </div>
-    <div class="question-area">
-      <div class="q-type" id="qType">📌 情境</div>
-      <div class="q-text" id="qText">Loading...</div>
+    <div class="qa">
+      <div class="qt" id="qt">情境</div>
+      <div class="qx" id="qx"></div>
     </div>
-    <div class="choices" id="choices"></div>
-    <div style="text-align:center;margin-top:4px">
-      <span style="font-size:0.75rem;color:rgba(255,255,255,0.3)" id="feedbackMsg"></span>
-    </div>
+    <div class="ch" id="ch"></div>
+    <div class="fb" id="fb"></div>
   </div>
 
-  <div class="screen" id="screen-result">
-    <div class="result-screen">
-      <span class="big-emoji" id="resultEmoji">🎉</span>
-      <div class="result-title" id="resultTitle">勝利！</div>
-      <div class="result-sub" id="resultSub">你擊敗了對手！</div>
-      <div id="resultExtra"></div>
-      <div class="btn-group">
-        <button class="btn" id="resultBtn" onclick="nextAfterResult()">繼續</button>
-        <button class="btn btn-secondary" onclick="showCharSelect()">選單</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="screen" id="screen-victory">
-    <div class="result-screen">
-      <span class="big-emoji" id="victoryEmoji">🏆</span>
-      <div class="result-title" id="victoryTitle">恭喜！</div>
-      <div class="result-sub" id="victorySub">全部通關！</div>
-      <div id="victoryExtra"></div>
-      <div class="btn-group" style="margin-top:20px">
-        <button class="btn" onclick="resetGame()">再玩一次</button>
+  <div class="s" id="s4">
+    <div class="rs">
+      <span class="be" id="re"></span>
+      <div class="rt" id="rt">勝利！</div>
+      <div class="rs2" id="rs"></div>
+      <div id="rx"></div>
+      <div class="bg">
+        <button class="btn" id="rb">繼續</button>
+        <button class="btn btn2" onclick="show(1)">選單</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const CHAR_DATA = {
-  dingdang:{
-    name:'叮噹哥',title:'閒聊高手',emoji:'🔔',hp:3,
-    intro:'喔～又有人來挑戰了耶！放輕鬆玩啦，開心最重要！',
-    correct:['喔不錯喔！有點東西嘛！','厲害耶！再來再來！','喔～這題你會？我小看你了！'],
-    wrong:['耶？這題不難啊，再想想啦～','沒關係啦，下一題下一題！','啊～差一點點耶！'],
-    win:'耶～贏了！你還要多練練喔！加油加油！',
-    lose:'哇塞你真的不錯耶！下次再來玩啦！'
-  },
-  linger:{
-    name:'鈴兒',title:'鈴聲清脆',emoji:'🔊',hp:4,
-    intro:'來來來～讓我聽聽你的英文好不好聽、厲不厲害！',
-    correct:['哇～好厲害！','答對了耶！你好棒！','鈴～又答對了！'],
-    wrong:['哎呀好可惜喔！再試一次！','這題我也覺得有點難啦～','沒關係！下次就會了！'],
-    win:'鈴鈴鈴～贏了！你還有得學呢～加油！',
-    lose:'你很強耶！下次我一定會更努力～！'
-  },
-  shaoyun:{
-    name:'少云老師',title:'博學多聞',emoji:'👨‍🏫',hp:5,
-    intro:'很好，又有一位學生來求教了。讓我來看看你的程度在哪裡呢？',
-    correct:['嗯，不錯。看來你有認真學習。','正確。你的基礎很紮實呢。','很好，這個用法你用對了。'],
-    wrong:['這個用法要注意呢。讓我為你講解一下...','可惜了，再想想看，你應該會的。','這裡是常見的誤區，要多注意呢。'],
-    win:'學無止境，回去多讀點書再來吧。',
-    lose:'非常好，你已經通過了這場測驗。繼續保持這樣的態度。'
-  },
-  qinshihuang:{
-    name:'秦始皇',title:'千古一帝',emoji:'👑',hp:6,
-    intro:'大膽！區區小民也敢挑戰朕？來吧，讓寡人看看你的本事！',
-    correct:['嗯，算你有點見識。','不錯，朕准許你繼續作答。','哼，尚有可取之處。'],
-    wrong:['大膽！這等簡單問題都不會？來人啊！','荒謬！這題也能錯？','朕甚感失望。'],
-    win:'哈哈哈！就這點程度也敢挑戰朕？不自量力！',
-    lose:'什麼？！朕...竟然輸了？！退下，讓朕靜一靜。'
-  },
-  tigress:{
-    name:'母老虎',title:'霸氣凜然',emoji:'🐯',hp:7,
-    intro:'少廢話。直接開始。答錯你就知道了。',
-    correct:['還可以。下一題。','行。繼續。','廢話少說，繼續。'],
-    wrong:['這題不會？你認真？','這種題目也錯？','你到底行不行？'],
-    win:'就這？回去練練再來。別浪費我時間。',
-    lose:'你行。下次我會贏。走了。'
-  },
-  rongrong:{
-    name:'榮榮兒',title:'時尚達人',emoji:'💅',hp:8,
-    intro:'欸～你確定要挑戰我嗎？我最近可是很～厲害的喔！做好心理準備了沒～',
-    correct:['還不賴嘛～果然我的眼光沒錯！','喔～有兩下子喔！','不錯耶～你今天穿得也很好看（離題'],
-    wrong:['這題都錯～好吧沒關係啦，誰叫我太耀眼讓你分心了呢～','哎呦～這題是陷阱啦！','沒關係啦～誰沒有過去呢～'],
-    win:'唉唷～這就是你的實力嗎？我有點失望耶～不過沒關係啦！',
-    lose:'什麼？！我竟然...沒關係！今天狀態不好啦！下次你就知道了～'
-  },
-  qijie:{
-    name:'綺姐',title:'優雅貴族',emoji:'🌹',hp:9,
-    intro:'歡迎。希望你能讓這場對弈變得有趣，不要讓我失望了。',
-    correct:['不錯，思路清晰。','很好的判斷。','你的程度比我想像中好。'],
-    wrong:['可惜了。以你的能力不該答錯這題。','再想想。你應該知道這個答案。','失誤了。調整好心態。'],
-    win:'看來還需要多加歷練。期待你下次的表現。',
-    lose:'我輸了。你的表現令人印象深刻，我記住你了。'
-  },
-  karen:{
-    name:'凱倫',title:'職場菁英',emoji:'💼',hp:10,
-    intro:"Let's get this done. 我的時間很寶貴，直接開始吧。",
-    correct:['Good. Next.','Correct. Keep going.','On point. Moving on.'],
-    wrong:["That's not correct. Let's move on.","Incorrect. We're on a deadline.","Focus. You know this."],
-    win:"Time's up. Better luck next time. I have a meeting.",
-    lose:"Impressive. You've earned my respect. Let's circle back later."
-  },
-  xinger:{
-    name:'星兒',title:'閃耀新星',emoji:'⭐',hp:12,
-    intro:'你來了呀～我等你好久了呢！星星說今天你會很厲害喔～快開始吧！',
-    correct:['哇～星星沒有騙我！你好棒！','好厲害！星星都在為你閃爍呢！','太強了～你果然是星星選中的人！'],
-    wrong:['沒關係的～星星說失誤也是成長的一部分呢！','哎呀～這題星星也沒告訴我答案呢～','別灰心～下一題星星會幫你的！'],
-    win:'今天星星站在我這邊呢～下次加油喔！回去多看點書～',
-    lose:'好厲害...星星都在為你歡呼呢！我輸得心服口服！'
-  },
-  stanley:{
-    name:'史丹利',title:'詞彙魔王',emoji:'🦹',hp:16,
-    intro:'喔？能來到這裡，看來你不只是個花瓶嘛。可惜，你遇到的是我——史丹利。準備好被幽默打敗了嗎？😏',
-    correct:['喔～不錯嘛！我承認這題你有資格跟我呼吸同一層的空氣。','厲害厲害～我差點就要認真起來了。','水喔～這題你竟然會，我給過。'],
-    wrong:['哈哈哈！這題你都不會？我推薦你去報名我的英文入門班⋯⋯我是說，如果有的話～','笑死，我阿嬤都會這題。','你認真的表情配上這個答案真是經典，我會記住這一刻的。','天啊～你到底是來挑戰我還是來娛樂我的？','不錯喔——我是說你的勇氣不錯。答案嘛⋯⋯嗯。','我該從哪裡開始吐槽好呢？這題真的有難度嗎？難度在於你居然選了錯的？'],
-    win:'我該說什麼好呢？我連嘲諷你都懶了。真的。去練練再來吧，帥哥也救不了你。',
-    lose:'（微笑鼓掌）好吧，你贏了。我得承認，你確實有兩下子。但我會回來的，因為我除了帥，還很持久。😏'
-  }
+var S = {clr:[],bu:false,ci:null,di:0,ch:null,lb:3,rn:0,qs:[],an:false,ti:null,tl:15};
+
+var CH = {
+  a:{n:"叮噹哥",t:"閒聊高手",e:"🔔",h:3,
+    i:"喔～又有人來挑戰了耶！放輕鬆玩啦！",
+    c:["喔不錯喔！","厲害耶！","小看你了！"],
+    w:["耶？這題不難啊～","沒關係啦！","啊差一點點耶！"],
+    v:"耶～贏了！你還要多練練喔！",
+    l:"哇塞你真的不錯耶！下次再來玩啦！"},
+  b:{n:"鈴兒",t:"鈴聲清脆",e:"🔊",h:4,
+    i:"來來來～讓我聽聽你的英文厲不厲害！",
+    c:["哇好厲害！","答對了你好棒！","鈴～又答對了！"],
+    w:["哎呀好可惜喔！","這題有點難啦～","沒關係下次就會了！"],
+    v:"鈴鈴鈴～你還有得學呢！",
+    l:"你很強耶！下次我一定會更努力！"},
+  c:{n:"少云老師",t:"博學多聞",e:"👨‍🏫",h:5,
+    i:"很好，又有一位學生來求教了。讓我看看你的程度。",
+    c:["不錯，你有認真學習。","正確，基礎很紮實。","很好，這個用法你對了。"],
+    w:["這個用法要注意呢。","可惜了，再想想。","這裡是常見誤區。"],
+    v:"學無止境，回去多讀點書吧。",
+    l:"非常好，你通過了這場測驗。"},
+  d:{n:"秦始皇",t:"千古一帝",e:"👑",h:6,
+    i:"大膽！區區小民也敢挑戰朕？來吧！",
+    c:["嗯，算你有點見識。","不錯，朕准許你繼續。","哼，尚有可取之處。"],
+    w:["大膽！這等問題都不會？","荒謬！這也能錯？","朕甚感失望。"],
+    v:"哈哈哈！就這程度也敢挑戰朕？",
+    l:"什麼？！朕竟然輸了？！退下！"},
+  e:{n:"母老虎",t:"霸氣凜然",e:"🐯",h:7,
+    i:"少廢話。直接開始。答錯你就知道了。",
+    c:["還可以。下一題。","行。繼續。","廢話少說繼續。"],
+    w:["這題不會？你認真？","這種題目也錯？","你到底行不行？"],
+    v:"就這？回去練練再來。",
+    l:"你行。下次我會贏。走了。"},
+  f:{n:"榮榮兒",t:"時尚達人",e:"💅",h:8,
+    i:"欸～你確定要挑戰我嗎？我最近可是很厲害的喔～",
+    c:["還不賴嘛！","喔有兩下子喔！","不錯耶今天穿得也很好看～"],
+    w:["這題都錯～沒關係啦～","哎呦這題是陷阱啦！","沒關係啦誰沒有過去呢～"],
+    v:"唉唷這就是你的實力嗎？我有點失望耶～",
+    l:"什麼？！我竟然...沒關係！今天狀態不好啦！"},
+  g:{n:"綺姐",t:"優雅貴族",e:"🌹",h:9,
+    i:"歡迎。希望你能讓這場對弈變得有趣。",
+    c:["不錯，思路清晰。","很好的判斷。","程度比我想像中好。"],
+    w:["可惜了。你不該答錯。","再想想，你應該知道。","失誤了，調整心態。"],
+    v:"看來還需要多加歷練。",
+    l:"我輸了。你的表現令人印象深刻。"},
+  h:{n:"凱倫",t:"職場菁英",e:"💼",h:10,
+    i:"Let's get this done. 我的時間很寶貴，直接開始吧。",
+    c:["Good. Next.","Correct. Keep going.","On point."],
+    w:["That's incorrect. Let's move on.","Wrong. We're on a deadline.","Focus."],
+    v:"Time's up. Better luck next time.",
+    l:"Impressive. You've earned my respect."},
+  i:{n:"星兒",t:"閃耀新星",e:"⭐",h:12,
+    i:"你來了呀～我等你好久了呢！星星說今天你會很厲害喔！",
+    c:["哇星星沒有騙我！","好厲害星星在為你閃爍呢！","太強了～你是星星選中的人！"],
+    w:["沒關係的～失誤也是成長呢！","哎呀這題星星也沒告訴我答案呢～","別灰心～下一題星星會幫你的！"],
+    v:"今天星星站在我這邊呢～下次加油喔！",
+    l:"好厲害...星星都在為你歡呼呢！"},
+  j:{n:"史丹利",t:"詞彙魔王",e:"🦹",h:16,
+    i:"喔？能來到這裡，看來你不只是個花瓶嘛。準備好被幽默打敗了嗎？",
+    c:["不錯嘛！這題你有資格跟我呼吸同一層空氣。","厲害厲害～我差點要認真了。","水喔～這題你竟然會，我給過。"],
+    w:["哈哈哈這題你都不會？","笑死，我阿嬤都會這題。","你認真的表情配上這答案真是經典。","天啊～你來挑戰我還是來娛樂我的？"],
+    v:"我連嘲諷你都懶了。去練練再來吧。",
+    l:"好吧你贏了。你確實有兩下子。但我除了帥，還很持久。"}
 };
 
-const CHARACTERS = [
-  {id:'dingdang',unlock:0},{id:'linger',unlock:1},{id:'shaoyun',unlock:2},
-  {id:'qinshihuang',unlock:3},{id:'tigress',unlock:4},{id:'rongrong',unlock:5},
-  {id:'qijie',unlock:6},{id:'karen',unlock:7},{id:'xinger',unlock:8}
-];
-const BOSS_ID = 'stanley';
+var CL = ["a","b","c","d","e","f","g","h","i"];
 
-const QUESTIONS = [
-  {situation:'在餐廳，服務生問 "Are you ready to order?"',question:'你該怎麼回應？',answer:"I'll have the pasta, please.",options:["I'll have the pasta, please.","Yes, I'm ordering.","Give me food.","What do you have?"],diff:'easy'},
-  {situation:'朋友祝你 "Happy birthday!"',question:'你該怎麼回應？',answer:"Thank you so much!",options:["Thank you so much!","You too!","No problem.","I know."],diff:'easy'},
-  {situation:'在超商結帳，店員說 "Would you like a bag?"',question:'你該如何回應？（要袋子）',answer:"Yes, please.",options:["Yes, please.","Give me bag.","I want.","OK you give."],diff:'easy'},
-  {situation:'有人問你 "How are you doing?"',question:'最自然的口語回應是？',answer:"Pretty good, thanks!",options:["Pretty good, thanks!","I'm fine.","I'm very good, thank you.","Yes I am."],diff:'easy'},
-  {situation:'你打翻飲料弄髒朋友的衣服',question:'該說什麼？',answer:"I'm so sorry! Are you okay?",options:["I'm so sorry! Are you okay?","It's not my fault.","You should move faster.","Sorry la."],diff:'easy'},
-  {situation:'對方自我介紹說 "Nice to meet you"',question:'你該怎麼回應？',answer:"Nice to meet you too!",options:["Nice to meet you too!","Yes.","Thank you.","Goodbye."],diff:'easy'},
-  {situation:'你要去洗手間，但正在開會中',question:'最合適的說法是？',answer:"Excuse me, I'll be right back.",options:["Excuse me, I'll be right back.","I'm going to toilet.","Bye.","I need to leave."],diff:'easy'},
-  {situation:'同事問 "Can I borrow your pen?"',question:'借給對方時該說？',answer:"Sure, here you go.",options:["Sure, here you go.","Yes you can.","Take.","I give you."],diff:'easy'},
-  {situation:'你在國外入境，官員問 "What's the purpose of your visit?"',question:'最正確的回答是？',answer:"Tourism / Vacation.",options:["Tourism / Vacation.","I want to play.","To see.","I'm visiting for fun."],diff:'easy'},
-  {situation:'朋友問 "Do you want some coffee?"',question:'拒絕但保持禮貌的說法是？',answer:"No thanks, I'm good.",options:["No thanks, I'm good.","I don't want.","No.","I hate coffee."],diff:'easy'},
-  {situation:'對方說 "Thank you" 時',question:'最常見的回應是？',answer:"You're welcome!",options:["You're welcome!","Yes.","OK.","Thank you too."],diff:'easy'},
-  {situation:'你要插話打斷對話',question:'最客氣的說法是？',answer:"Sorry to interrupt, but...",options:["Sorry to interrupt, but...","Stop! Listen to me!","Hey!","I want to talk."],diff:'easy'},
-  {situation:'同事說 "I'm swamped with work"',question:'意思是？',answer:'他忙翻了',options:['他忙翻了','他被火燒到了','他在划水','他辭職了'],diff:'medium'},
-  {situation:'主管在會議中說 "Let's touch base tomorrow"',question:'意思是？',answer:'明天簡短討論一下',options:['明天簡短討論一下','明天見面握手','明天去基地','明天踢足球'],diff:'medium'},
-  {situation:'同事說 "I'll CC you on that email"',question:'意思是？',answer:'他會把 email 副本寄給你',options:['他會把 email 副本寄給你','他會把碳紙給你','他會抄寫 email 給你','他會在 email 上標註你'],diff:'medium'},
-  {situation:'旅遊時問路，對方說 "It's just around the corner"',question:'意思是？',answer:'就在轉角附近',options:['就在轉角附近','迷路了','在角落裡面','繞一圈'],diff:'medium'},
-  {situation:'朋友說 "I'm pulling your leg"',question:'意思是？',answer:'他在開玩笑/鬧你',options:['他在開玩笑/鬧你','他在拉你的腳','他在欺負你','他在幫助你'],diff:'medium'},
-  {situation:'室友說 "Could you split the bill?"',question:'意思是？',answer:'要不要平分帳單',options:['要不要平分帳單','能不能把帳單撕開','你請客','帳單有問題'],diff:'medium'},
-  {situation:'客服說 "Your call is very important to us"',question:'實際含義通常是？',answer:'官方罐頭訊息，請繼續等',options:['官方罐頭訊息，請繼續等','你的電話真的很重要','客服很重視你','馬上有人接聽'],diff:'medium'},
-  {situation:'同事提案被打槍，你問 "What did he say?"',question:'對方回 "He said the budget is tight" 意思是？',answer:'預算有限/沒錢了',options:['預算有限/沒錢了','預算很小氣','預算很緊繃','預算很緊身'],diff:'medium'},
-  {situation:'你約朋友，對方說 "I'm not sure yet, I'll let you know"',question:'意思是？',answer:'還不確定，會再通知你',options:['還不確定，會再通知你','我不確定但我會讓你懂','我確定我會讓你知道','我不想知道'],diff:'medium'},
-  {situation:'店員說 "We're out of stock"',question:'意思是？',answer:'缺貨了',options:['缺貨了','我們出去補貨','我們有庫存','在倉庫外面'],diff:'medium'},
-  {situation:'朋友說 "That's a rip-off!"',question:'意思是？',answer:'這太貴了/坑人的價格',options:['這太貴了/坑人的價格','那是撕開的','被扯破了','那是贈品'],diff:'medium'},
-  {situation:'同事意味深長地說 "I see..."',question:'通常表達什麼語氣？',answer:'懂了（但保留態度或不以為然）',options:['懂了（但保留態度或不以為然）','我看見了','我視力很好','再見'],diff:'medium'},
-  {situation:'你要提前離開聚會',question:'最自然的說法是？',answer:"I think I'm gonna head out. Thanks for having me!",options:["I think I'm gonna head out. Thanks for having me!","I must leave now. Goodbye.","I'm going home.","Bye bye."],diff:'medium'},
-  {situation:'有人跟你抱怨一堆',question:'你想說「辛苦了」，最接近的英文是？',answer:"That sounds rough. Hang in there!",options:["That sounds rough. Hang in there!","Hard work!","You're tired.","Very辛苦."],diff:'medium'},
-  {situation:'同事說 "He threw me under the bus"',question:'意思是？',answer:'他出賣了我/讓我背黑鍋',options:['他出賣了我/讓我背黑鍋','他把我丟到公車底下','他幫了我一把','他載我去搭公車'],diff:'hard'},
-  {situation:'主管說 "Don't put all your eggs in one basket"',question:'意思是？',answer:'不要把資源全部放在同一個地方',options:['不要把資源全部放在同一個地方','不要把雞蛋放同個籃子（物理）','不要買雞蛋','籃子太小了'],diff:'hard'},
-  {situation:'對方說 "I'll take a rain check"',question:'意思是？',answer:'這次不行，改天再約',options:['這次不行，改天再約','我要去檢查下雨','我要拿雨傘','我喜歡下雨天'],diff:'hard'},
-  {situation:'同事說 "That's a bitter pill to swallow"',question:'意思是？',answer:'這很難接受/令人失望',options:['這很難接受/令人失望','這藥很苦','這很好吃','這是吞藥'],diff:'hard'},
-  {situation:'對方說 "You need to step up your game"',question:'意思是？',answer:'你得加把勁/提升表現',options:['你得加把勁/提升表現','你該站起來玩遊戲','你遊戲該升級了','你該換遊戲了'],diff:'hard'},
-  {situation:'同事說 "I'm just playing devil's advocate"',question:'意思是？',answer:'我只是故意提出反面觀點來討論',options:['我只是故意提出反面觀點來討論','我在幫魔鬼說話','我在玩角色扮演','我支持惡魔'],diff:'hard'},
-  {situation:'談判時對方說 "Let's not reinvent the wheel"',question:'意思是？',answer:'不要重複做沒意義的事/沿用既有方案',options:['不要重複做沒意義的事/沿用既有方案','不要重新發明輪子','輪子不用換新的','我們不要輪子了'],diff:'hard'},
-  {situation:'朋友約你，你說 "I'm down!"',question:'意思是？',answer:'我要去/我參加！',options:['我要去/我參加！','我心情不好','我躺平了','我往下走'],diff:'hard'},
-  {situation:'同事說 "This is a game changer"',question:'意思是？',answer:'這顛覆了局勢/革命性的改變',options:['這顛覆了局勢/革命性的改變','這遊戲換人了','換人玩遊戲','規則變了'],diff:'hard'},
-  {situation:'主管輕聲說 "The elephant in the room..."',question:'意思是？',answer:'大家避而不談但顯而易見的問題',options:['大家避而不談但顯而易見的問題','房間裡有大象','大家想養大象','動物園的話題'],diff:'hard'},
-  {situation:'對方說 "I'm between jobs right now"',question:'委婉的意思是？',answer:'他目前失業/待業中',options:['他目前失業/待業中','他正在兩份工作之間','他在上班途中','他正在兼職'],diff:'hard'},
-  {situation:'同事說 "You can say that again!"',question:'意思是？',answer:'我非常同意！/說得太對了！',options:['我非常同意！/說得太對了！','你可以再說一次','你剛說什麼我沒聽到','你再說一次試試看'],diff:'hard'},
-  {situation:'同事問 "What's the catch?"',question:'意思是？',answer:'有什麼陷阱/隱藏條件？',options:['有什麼陷阱/隱藏條件？','這是什麼魚？','你抓到什麼？','有什麼好玩的？'],diff:'hard'},
-  {situation:'朋友說 "I'll bite"',question:'意思是？',answer:'好吧我上鉤了/我願意聽聽',options:['好吧我上鉤了/我願意聽聽','我要咬你','我要吃飯了','我不相信'],diff:'hard'},
+var Q = [
+  {s:"服務生問 Are you ready to order?",q:"你該怎麼回應？",a:"I will have the pasta please.",o:["I will have the pasta please.","Yes I am ordering.","Give me food.","What do you have?"],d:0},
+  {s:"朋友祝你 Happy birthday!",q:"該怎麼回應？",a:"Thank you so much!",o:["Thank you so much!","You too!","No problem.","I know."],d:0},
+  {s:"店員問 Would you like a bag?",q:"要袋子時怎麼說？",a:"Yes please.",o:["Yes please.","Give me bag.","I want.","OK you give."],d:0},
+  {s:"有人問你 How are you doing?",q:"最自然的回應是？",a:"Pretty good thanks!",o:["Pretty good thanks!","I am fine.","I am very good.","Yes I am."],d:0},
+  {s:"打翻飲料弄髒朋友衣服",q:"該說什麼？",a:"I am so sorry!",o:["I am so sorry!","It is not my fault.","You should move.","Sorry la."],d:0},
+  {s:"對方說 Nice to meet you",q:"該怎麼回應？",a:"Nice to meet you too!",o:["Nice to meet you too!","Yes.","Thank you.","Goodbye."],d:0},
+  {s:"你要去洗手間但正在開會",q:"最合適的說法是？",a:"Excuse me I will be right back.",o:["Excuse me I will be right back.","I am going to toilet.","Bye.","I need to leave."],d:0},
+  {s:"同事問 Can I borrow your pen?",q:"借用時該說？",a:"Sure here you go.",o:["Sure here you go.","Yes you can.","Take.","I give you."],d:0},
+  {s:"入境官員問 What is the purpose of your visit?",q:"最正確的回答是？",a:"Tourism or Vacation.",o:["Tourism or Vacation.","I want to play.","To see.","For fun."],d:0},
+  {s:"朋友問 Do you want some coffee?",q:"拒絕但禮貌的說法是？",a:"No thanks I am good.",o:["No thanks I am good.","I do not want.","No.","I hate coffee."],d:0},
+  {s:"同事說 I am swamped with work",q:"意思是？",a:"他忙翻了",o:["他忙翻了","他被火燒到了","他在划水","他辭職了"],d:1},
+  {s:"主管說 Let us touch base tomorrow",q:"意思是？",a:"明天簡短討論一下",o:["明天簡短討論一下","明天見面握手","明天去基地","明天踢足球"],d:1},
+  {s:"同事說 I will CC you",q:"意思是？",a:"他會寄副本給你",o:["他會寄副本給你","他會把碳紙給你","他在抄寫email","他會標註你"],d:1},
+  {s:"旅遊問路對方說 It is just around the corner",q:"意思是？",a:"就在轉角附近",o:["就在轉角附近","迷路了","在角落裡面","繞一圈"],d:1},
+  {s:"朋友說 I am pulling your leg",q:"意思是？",a:"他在開玩笑",o:["他在開玩笑","他在拉你的腳","他在欺負你","他在幫助你"],d:1},
+  {s:"室友說 Could you split the bill?",q:"意思是？",a:"要不要平分帳單",o:["要不要平分帳單","能不能把帳單撕開","你請客","帳單有問題"],d:1},
+  {s:"提案被打槍，你問他說什麼？",q:"對方回 the budget is tight 意思是？",a:"預算有限",o:["預算有限","預算很小氣","預算很緊繃","預算很緊身"],d:1},
+  {s:"你約朋友，對方說 I am not sure yet",q:"意思是？",a:"還不確定會再通知你",o:["還不確定會再通知你","我不確定但我會讓你懂","我確定我會讓你知道","我不想知道"],d:1},
+  {s:"店員說 We are out of stock",q:"意思是？",a:"缺貨了",o:["缺貨了","我們出去補貨","我們有庫存","在倉庫外面"],d:1},
+  {s:"朋友說 That is a rip-off!",q:"意思是？",a:"這太貴了",o:["這太貴了","那是撕開的","被扯破了","那是贈品"],d:1},
+  {s:"同事說 He threw me under the bus",q:"意思是？",a:"他出賣了我",o:["他出賣了我","他把我丟到公車下","他幫了我","他載我去搭車"],d:2},
+  {s:"主管說 Don't put all your eggs in one basket",q:"意思是？",a:"不要把資源放同一個地方",o:["不要把資源放同一個地方","不要把雞蛋放同個籃子","不要買雞蛋","籃子太小了"],d:2},
+  {s:"對方說 I will take a rain check",q:"意思是？",a:"這次不行改天再約",o:["這次不行改天再約","我要去檢查下雨","我要拿雨傘","我喜歡下雨天"],d:2},
+  {s:"同事說 That is a bitter pill to swallow",q:"意思是？",a:"這很難接受",o:["這很難接受","這藥很苦","這很好吃","這是吞藥"],d:2},
+  {s:"對方說 You need to step up your game",q:"意思是？",a:"你得加把勁",o:["你得加把勁","你該站起來玩遊戲","你遊戲該升級了","你該換遊戲了"],d:2},
+  {s:"同事說 I am just playing devil's advocate",q:"意思是？",a:"故意提出反面觀點",o:["故意提出反面觀點","我在幫魔鬼說話","我在角色扮演","我支持惡魔"],d:2},
+  {s:"談判時說 Let us not reinvent the wheel",q:"意思是？",a:"沿用既有方案",o:["沿用既有方案","不要重新發明輪子","輪子不用換新的","我們不要輪子了"],d:2},
+  {s:"朋友約你，你說 I am down!",q:"意思是？",a:"我要去！",o:["我要去！","我心情不好","我躺平了","我往下走"],d:2},
+  {s:"同事說 This is a game changer",q:"意思是？",a:"革命性的改變",o:["革命性的改變","這遊戲換人了","換人玩遊戲","規則變了"],d:2},
+  {s:"對方說 I am between jobs right now",q:"委婉意思是？",a:"他目前待業中",o:["他目前待業中","他在兩份工作間","他在上班途中","他在兼職"],d:2},
+  {s:"同事說 You can say that again!",q:"意思是？",a:"我非常同意！",o:["我非常同意！","你可以再說一次","你剛說什麼我沒聽到","你再說一次試試看"],d:2}
 ];
 
-const Q_PER_ROUND = 5;
-const MAX_LIVES = 3;
-const TIME_LIMIT = 15;
+function show(n) {
+  var ss = document.querySelectorAll(".s");
+  for (var i = 0; i < ss.length; i++) ss[i].classList.remove("on");
+  document.getElementById("s" + n).classList.add("on");
+  if (n === 1) renderG();
+}
 
-let state = {
-  screen:'start',
-  cleared:[],
-  bossUnlocked:false,
-  pendingChar:null,
-  pendingDiff:'easy',
-  currentChar:null,
-  isBoss:false,
-  lives:MAX_LIVES,
-  roundNum:0,
-  questions:[],
-  answered:false,
-  timer:null,
-  timeLeft:TIME_LIMIT
+function sf(a) {
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function pk(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+document.getElementById("btnStart").onclick = function() {
+  S.clr = []; S.bu = false;
+  show(1);
 };
 
-function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
-function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function showStart(){resetGame();showScreen('screen-start')}
-
-function showCharSelect(){
-  state.screen='char';
-  showScreen('screen-char');
-  renderCharGrid();
-}
-
-function renderCharGrid(){
-  const grid=document.getElementById('charGrid');
-  let html='';
-  [...CHARACTERS,{id:BOSS_ID}].forEach(c=>{
-    const d=c.id===BOSS_ID?CHAR_DATA.stanley:CHAR_DATA[c.id];
-    const isBoss=c.id===BOSS_ID;
-    const isCleared=state.cleared.includes(c.id);
-    const isLocked=isBoss && state.cleared.length<9;
-    const cls=['char-card'];
-    if(isCleared)cls.push('cleared');
-    if(isLocked)cls.push('locked');
-    html+=`<div class="${cls.join(' ')}" onclick="openIntro('${c.id}')">
-      ${isBoss?'<span class="boss-badge">BOSS</span>':''}
-      <span class="emoji">${d.emoji}</span>
-      <div class="name">${d.name}</div>
-      <div class="title">${d.title}</div>
-      <div class="hp-text">HP ${d.hp}</div>
-    </div>`;
-  });
-  grid.innerHTML=html;
-}
-
-function openIntro(id){
-  if(id===BOSS_ID && state.cleared.length<9)return;
-  if(state.cleared.includes(id))return;
-  const d=id===BOSS_ID?CHAR_DATA.stanley:CHAR_DATA[id];
-  state.pendingChar=id;
-  state.pendingDiff='easy';
-  showScreen('screen-intro');
-  document.getElementById('introEmoji').textContent=d.emoji;
-  document.getElementById('introName').textContent=d.name;
-  document.getElementById('introTitle').textContent=d.title;
-  document.getElementById('introHp').textContent='HP '+d.hp;
-  document.getElementById('introDialogue').textContent=d.intro;
-  document.querySelectorAll('#screen-intro .diff-card').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('intro-diff-easy').classList.add('selected');
-}
-
-function pickDifficulty(d){
-  state.pendingDiff=d;
-  document.querySelectorAll('#screen-intro .diff-card').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('intro-diff-'+d).classList.add('selected');
-}
-
-function startBattleWithDiff(){
-  if(!state.pendingChar)return;
-  startBattle(state.pendingChar,state.pendingDiff);
-}
-
-function getWordBank(diff){
-  const diffs=['easy','medium','hard'];
-  const idx=diffs.indexOf(diff);
-  let pool=QUESTIONS.filter(q=>diffs.indexOf(q.diff)<=idx);
-  if(pool.length<Q_PER_ROUND)pool=shuffle([...QUESTIONS]);
-  return shuffle(pool).slice(0,Q_PER_ROUND);
-}
-
-function startBattle(id,diff){
-  const isBoss=id===BOSS_ID;
-  const d=isBoss?CHAR_DATA.stanley:CHAR_DATA[id];
-  state.currentChar={id,name:d.name,title:d.title,emoji:d.emoji,hp:d.hp,data:d};
-  state.isBoss=isBoss;
-  state.lives=MAX_LIVES;
-  state.roundNum=0;
-  state.answered=false;
-  state.screen='battle';
-  showScreen('screen-battle');
-  state.questions=getWordBank(diff);
-  document.getElementById('battleEmoji').textContent=d.emoji;
-  document.getElementById('battleName').textContent=d.name;
-  document.getElementById('battleTitle').textContent=d.title;
-  document.getElementById('tauntArea').innerHTML='';
-  renderHearts();
-  renderEnemyHp();
-  nextRound();
-}
-
-function renderHearts(){
-  const c=document.getElementById('playerHearts');
-  let h='';
-  for(let i=0;i<MAX_LIVES;i++)h+=`<span class="heart ${i<state.lives?'':'lost'}">❤️</span>`;
-  c.innerHTML=h;
-}
-
-function renderEnemyHp(){
-  const hp=state.currentChar.hp;
-  const curHp=Math.max(0,hp-state.roundNum);
-  document.getElementById('enemyHpBar').style.width=(curHp/hp*100)+'%';
-  document.getElementById('enemyHpText').textContent=`${curHp} / ${hp}`;
-}
-
-function nextRound(){
-  if(state.roundNum>=Q_PER_ROUND){
-    if(state.lives>0){showWin();return}
-    else{showLose();return}
+function renderG() {
+  var g = document.getElementById("grid");
+  var h = "";
+  var all = CL.slice();
+  all.push("j");
+  for (var i = 0; i < all.length; i++) {
+    var id = all[i];
+    var ib = (id === "j");
+    var c = CH[id];
+    var ic = S.clr.indexOf(id) !== -1;
+    var il = ib && S.clr.length < 9;
+    var cls = "cc";
+    if (ic) cls += " cl";
+    if (il) cls += " lk";
+    h += "<div class=\"" + cls + "\" onclick=\"oi('" + id + "')\">";
+    if (ib) h += "<span class=\"bb\">BOSS</span>";
+    h += "<span class=\"e\">" + c.e + "</span>";
+    h += "<div class=\"n\">" + c.n + "</div>";
+    h += "<div class=\"t\">" + c.t + "</div>";
+    h += "<div class=\"h\">HP " + c.h + "</div></div>";
   }
-  state.answered=false;
-  document.getElementById('tauntArea').innerHTML='';
-  const q=state.questions[state.roundNum];
-  document.getElementById('progressText').textContent=`第 ${state.roundNum+1} / ${Q_PER_ROUND} 題`;
-  document.getElementById('qType').textContent='📌 情境';
-  document.getElementById('qText').textContent=q.situation+'\n'+q.question;
-  document.getElementById('feedbackMsg').textContent='';
-  renderEnemyHp();
-  const choices=document.getElementById('choices');
-  choices.innerHTML='';
-  shuffle([...q.options]).forEach(o=>{
-    const btn=document.createElement('div');
-    btn.className='choice';
-    btn.textContent=o;
-    btn.onclick=()=>handleAnswer(btn,q,o);
-    choices.appendChild(btn);
-  });
-  state.timeLeft=TIME_LIMIT;
-  document.getElementById('timerBar').style.width='100%';
-  document.getElementById('timerDisplay').textContent=TIME_LIMIT;
-  startTimer();
+  g.innerHTML = h;
 }
 
-function startTimer(){
-  clearInterval(state.timer);
-  state.timer=setInterval(()=>{
-    state.timeLeft--;
-    document.getElementById('timerDisplay').textContent=state.timeLeft;
-    document.getElementById('timerBar').style.width=Math.max(0,(state.timeLeft/TIME_LIMIT)*100)+'%';
-    if(state.timeLeft<=0&&!state.answered){clearInterval(state.timer);handleTimeout()}
-  },1000);
+function oi(id) {
+  if (id === "j" && S.clr.length < 9) return;
+  if (S.clr.indexOf(id) !== -1) return;
+  S.ci = id;
+  S.di = 0;
+  var c = CH[id];
+  document.getElementById("ie").textContent = c.e;
+  document.getElementById("in").textContent = c.n;
+  document.getElementById("it").textContent = c.t;
+  document.getElementById("ih").textContent = "HP " + c.h;
+  document.getElementById("iw").textContent = c.i;
+  document.getElementById("de").classList.add("sl");
+  document.getElementById("dm").classList.remove("sl");
+  document.getElementById("dh").classList.remove("sl");
+  show(2);
 }
 
-function handleTimeout(){
-  if(state.answered)return;
-  state.answered=true;state._lastCorrect=false;state.lives--;renderHearts();
-  document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
-  document.getElementById('feedbackMsg').textContent='⏰ 時間到！';document.getElementById('feedbackMsg').style.color='#f44336';
-  showTaunt('wrong');
-  setTimeout(()=>{if(state.lives<=0){showLose();return}state.roundNum++;nextRound()},1600);
+function pd(n) {
+  S.di = n;
+  document.getElementById("de").classList.remove("sl");
+  document.getElementById("dm").classList.remove("sl");
+  document.getElementById("dh").classList.remove("sl");
+  document.getElementById("d" + (n === 0 ? "e" : n === 1 ? "m" : "h")).classList.add("sl");
 }
 
-function handleAnswer(btn,q,ans){
-  if(state.answered)return;
-  state.answered=true;clearInterval(state.timer);
-  document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
-  const correct=ans===q.answer;
-  state._lastCorrect=correct;
-  if(correct){
-    btn.classList.add('correct');
-    document.getElementById('feedbackMsg').textContent='✅ 正確！';document.getElementById('feedbackMsg').style.color='#4caf50';
-  }else{
-    btn.classList.add('wrong');state.lives--;renderHearts();
-    const cb=Array.from(document.querySelectorAll('.choice')).find(b=>b.textContent===q.answer);
-    if(cb)cb.classList.add('correct');
-    document.getElementById('feedbackMsg').textContent='❌ 正確答案是：'+q.answer;document.getElementById('feedbackMsg').style.color='#f44336';
-    showTaunt('wrong');
+document.getElementById("btnFight").onclick = function() {
+  if (!S.ci) return;
+  fight(S.ci, S.di);
+};
+
+function fight(id, di) {
+  var ib = (id === "j");
+  var d = CH[id];
+  S.ch = {id:id, n:d.n, t:d.t, e:d.e, h:d.h, d:d};
+  S.lb = 3;
+  S.rn = 0;
+  S.an = false;
+  S.ti = null;
+  var pool = Q.filter(function(q) { return q.d <= di; });
+  if (pool.length < 5) pool = Q.slice();
+  sf(pool);
+  S.qs = pool.slice(0, 5);
+  document.getElementById("be").textContent = d.e;
+  document.getElementById("bn").textContent = d.n;
+  document.getElementById("bt").textContent = d.t;
+  document.getElementById("ta").innerHTML = "";
+  show(3);
+  hr();
+  eh();
+  nr();
+}
+
+function hr() {
+  var p = document.getElementById("ph");
+  var h = "";
+  for (var i = 0; i < 3; i++) {
+    h += "<span class=\"he" + (i < S.lb ? "" : " lo") + "\">❤️</span>";
   }
-  setTimeout(()=>{if(state.lives<=0){showLose();return}state.roundNum++;nextRound()},1400);
+  p.innerHTML = h;
 }
 
-function showTaunt(type){
-  const d=state.currentChar.data;
-  if(!d[type])return;
-  const lines=d[type];
-  const text=Array.isArray(lines)?pick(lines):lines;
-  const area=document.getElementById('tauntArea');
-  area.innerHTML=`<div class="taunt-box"><div class="taunt-speaker">💬 ${d.name}：</div><div class="taunt-text">${text}</div></div>`;
+function eh() {
+  var hp = S.ch.h;
+  var ch = Math.max(0, hp - S.rn);
+  document.getElementById("ehb").style.width = (ch / hp * 100) + "%";
+  document.getElementById("eht").textContent = ch + " / " + hp;
 }
 
-function showWin(){
-  state.screen='result';showScreen('screen-result');
-  const d=state.currentChar.data;
-  document.getElementById('resultEmoji').textContent='🎉';
-  document.getElementById('resultTitle').textContent='勝利！';
-  document.getElementById('resultSub').textContent=`你擊敗了 ${d.name}！`;
-  if(!state.cleared.includes(state.currentChar.id))state.cleared.push(state.currentChar.id);
-  const extra=document.getElementById('resultExtra');
-  if(state.cleared.length>=9&&!state.cleared.includes(BOSS_ID)){
-    extra.innerHTML=`<div class="unlock-msg boss-reveal">🦹 隱藏 BOSS 【史丹利】 現身了！！<br>一個幽默風趣又帥氣的男人等著調侃你 😏</div>`;
-    state.bossUnlocked=true;
-  }else if(state.cleared.includes(BOSS_ID)){
-    extra.innerHTML=`<div class="unlock-msg">🏆 你連史丹利都擊敗了！<br>${d.lose}</div>`;
-    state.bossUnlocked=false;
-  }else{
-    extra.innerHTML=`<div class="char-taunt">💬 ${d.name}：${d.win}</div>`;
+function nr() {
+  if (S.rn >= 5) {
+    if (S.lb > 0) { wwin(); return; }
+    else { l lose(); return; }
   }
-  document.getElementById('resultBtn').textContent=state.bossUnlocked?'挑戰 BOSS':'繼續';
+  S.an = false;
+  document.getElementById("ta").innerHTML = "";
+  var q = S.qs[S.rn];
+  document.getElementById("pt").textContent = "第 " + (S.rn + 1) + " / 5 題";
+  document.getElementById("qt").textContent = "情境";
+  document.getElementById("qx").textContent = q.s + " " + q.q;
+  document.getElementById("fb").textContent = "";
+  eh();
+  var chd = document.getElementById("ch");
+  chd.innerHTML = "";
+  var opts = sf(q.o.slice());
+  for (var i = 0; i < opts.length; i++) {
+    var b = document.createElement("div");
+    b.className = "chc";
+    b.textContent = opts[i];
+    b._q = q;
+    b._a = opts[i];
+    b.onclick = function() { ha(this, this._q, this._a); };
+    chd.appendChild(b);
+  }
+  S.tl = 15;
+  document.getElementById("tbar").style.width = "100%";
+  document.getElementById("td").textContent = 15;
+  st();
 }
 
-function showLose(){
-  state.screen='result';showScreen('screen-result');
-  const d=state.currentChar.data;
-  document.getElementById('resultEmoji').textContent='💀';
-  document.getElementById('resultTitle').textContent='敗北...';
-  document.getElementById('resultSub').textContent=`你被 ${d.name} 擊敗了`;
-  document.getElementById('resultExtra').innerHTML=`<div class="char-taunt">💬 ${d.name}：${d.lose}</div>`;
-  document.getElementById('resultBtn').textContent='再試一次';
+function st() {
+  clearInterval(S.ti);
+  S.ti = setInterval(function() {
+    S.tl--;
+    document.getElementById("td").textContent = S.tl;
+    document.getElementById("tbar").style.width = Math.max(0, (S.tl / 15) * 100) + "%";
+    if (S.tl <= 0 && !S.an) {
+      clearInterval(S.ti);
+      ht();
+    }
+  }, 1000);
 }
 
-function nextAfterResult(){
-  const btn=document.getElementById('resultBtn');
-  if(btn.textContent==='再試一次'){startBattle(state.currentChar.id,state.pendingDiff);return;}
-  if(btn.textContent==='挑戰 BOSS'){openIntro(BOSS_ID);return;}
-  if(state.cleared.includes(BOSS_ID)){showVictory();return;}
-  showCharSelect();
+function ht() {
+  if (S.an) return;
+  S.an = true;
+  S.lb--;
+  hr();
+  var btns = document.querySelectorAll("#ch .chc");
+  for (var i = 0; i < btns.length; i++) btns[i].disabled = true;
+  document.getElementById("fb").textContent = "時間到！";
+  document.getElementById("fb").style.color = "#f44336";
+  st2("w");
+  setTimeout(function() {
+    if (S.lb <= 0) { lose(); return; }
+    S.rn++;
+    nr();
+  }, 1500);
 }
 
-function showVictory(){
-  state.screen='victory';showScreen('screen-victory');
-  document.getElementById('victoryEmoji').textContent='🏆';
-  document.getElementById('victoryTitle').textContent='恭喜通關！';
-  document.getElementById('victorySub').textContent='你擊敗了所有挑戰者，包含那位幽默風趣又帥氣的史丹利！';
-  document.getElementById('victoryExtra').innerHTML='<p style="color:rgba(255,255,255,0.6);font-size:1rem;margin-top:8px">真正的英文高手，就是你 👑</p>';
+function ha(btn, q, ans) {
+  if (S.an) return;
+  S.an = true;
+  clearInterval(S.ti);
+  var btns = document.querySelectorAll("#ch .chc");
+  for (var i = 0; i < btns.length; i++) btns[i].disabled = true;
+  var ok = (ans === q.a);
+  if (ok) {
+    btn.classList.add("cr");
+    document.getElementById("fb").textContent = "正確！";
+    document.getElementById("fb").style.color = "#4caf50";
+  } else {
+    btn.classList.add("wr");
+    S.lb--;
+    hr();
+    var btns2 = document.querySelectorAll("#ch .chc");
+    for (var i = 0; i < btns2.length; i++) {
+      if (btns2[i].textContent === q.a) btns2[i].classList.add("cr");
+    }
+    document.getElementById("fb").textContent = "正確答案是：" + q.a;
+    document.getElementById("fb").style.color = "#f44336";
+    st2("w");
+  }
+  setTimeout(function() {
+    if (S.lb <= 0) { lose(); return; }
+    S.rn++;
+    nr();
+  }, 1200);
 }
 
-function resetGame(){
-  clearInterval(state.timer);
-  state={screen:'start',cleared:[],bossUnlocked:false,pendingChar:null,pendingDiff:'easy',currentChar:null,isBoss:false,lives:MAX_LIVES,roundNum:0,questions:[],answered:false,timer:null,timeLeft:TIME_LIMIT};
-  showScreen('screen-start');
+function st2(type) {
+  var d = S.ch.d;
+  if (!d[type]) return;
+  var lines = d[type];
+  var txt = Array.isArray(lines) ? pk(lines) : lines;
+  document.getElementById("ta").innerHTML = "<div class=\"ta\"><div class=\"ts\">" + d.n + "：</div><div class=\"tt\">" + txt + "</div></div>";
 }
+
+function wwin() {
+  show(4);
+  var d = S.ch.d;
+  document.getElementById("re").textContent = "🎉";
+  document.getElementById("rt").textContent = "勝利！";
+  document.getElementById("rs").textContent = "你擊敗了 " + d.n + "！";
+  if (S.clr.indexOf(S.ch.id) === -1) S.clr.push(S.ch.id);
+  var ex = document.getElementById("rx");
+  if (S.clr.length >= 9 && S.clr.indexOf("j") === -1) {
+    ex.innerHTML = "<div class=\"um\">隱藏 BOSS 【史丹利】 現身了！！快去挑戰他！</div>";
+    S.bu = true;
+  } else if (S.clr.indexOf("j") !== -1) {
+    ex.innerHTML = "<div class=\"um\">你連史丹利都擊敗了！" + d.l + "</div>";
+    S.bu = false;
+  } else {
+    ex.innerHTML = "<div class=\"ct\">" + d.n + "：" + d.v + "</div>";
+  }
+  var btn = document.getElementById("rb");
+  btn.textContent = S.bu ? "挑戰 BOSS" : "繼續";
+  btn._boss = S.bu;
+}
+
+function lose() {
+  show(4);
+  var d = S.ch.d;
+  document.getElementById("re").textContent = "💀";
+  document.getElementById("rt").textContent = "敗北...";
+  document.getElementById("rs").textContent = "你被 " + d.n + " 擊敗了";
+  document.getElementById("rx").innerHTML = "<div class=\"ct\">" + d.n + "：" + d.l + "</div>";
+  var btn = document.getElementById("rb");
+  btn.textContent = "再試一次";
+  btn._boss = false;
+}
+
+document.getElementById("rb").onclick = function() {
+  if (this.textContent === "再試一次") { fight(S.ci, S.di); return; }
+  if (this.textContent === "挑戰 BOSS") { oi("j"); return; }
+  if (S.clr.indexOf("j") !== -1) {
+    show(0);
+    return;
+  }
+  show(1);
+};
 </script>
 </body>
 </html>
