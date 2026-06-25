@@ -17,12 +17,10 @@ h1{font-size:2rem;text-align:center;margin-bottom:8px;background:linear-gradient
 .btn-sm{padding:10px 20px;font-size:0.9rem;width:auto}
 .btn-secondary{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2)}
 .btn-secondary:hover{background:rgba(255,255,255,0.2);box-shadow:none}
-.btn-selected{background:linear-gradient(135deg,#f093fb,#f5576c) !important;box-shadow:0 4px 16px rgba(240,147,251,0.3)}
 .character-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
 .char-card{background:rgba(255,255,255,0.08);border-radius:16px;padding:16px 8px;text-align:center;cursor:pointer;transition:all .3s;border:2px solid transparent;position:relative}
 .char-card:hover:not(.locked):not(.cleared){background:rgba(255,255,255,0.15);transform:translateY(-4px)}
 .char-card.locked{opacity:0.4;cursor:not-allowed}
-.char-card.locked-boss{opacity:0.5;cursor:not-allowed;border-color:rgba(240,147,251,0.3)}
 .char-card.cleared{opacity:0.5;border-color:#4caf50}
 .char-card.cleared::after{content:"✓";position:absolute;top:6px;right:10px;color:#4caf50;font-weight:bold;font-size:1.2rem}
 .char-card .emoji{font-size:2.4rem;display:block;margin-bottom:4px}
@@ -30,6 +28,23 @@ h1{font-size:2rem;text-align:center;margin-bottom:8px;background:linear-gradient
 .char-card .title{font-size:0.65rem;color:rgba(255,255,255,0.5);margin-top:2px}
 .char-card .hp-text{font-size:0.6rem;color:rgba(255,255,255,0.4);margin-top:4px}
 .boss-badge{background:linear-gradient(135deg,#f093fb,#f5576c);font-size:0.5rem;padding:2px 8px;border-radius:20px;position:absolute;top:-6px;right:-6px;font-weight:700;color:#fff}
+/* Intro Screen */
+.intro-display{text-align:center;margin-bottom:20px}
+.intro-display .big-emoji{font-size:5rem;display:block;margin-bottom:8px}
+.intro-display .name{font-size:1.5rem;font-weight:700}
+.intro-display .title{font-size:0.85rem;color:rgba(255,255,255,0.5);margin-top:2px}
+.intro-display .hp{font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:4px}
+.dialogue-box{background:rgba(255,255,255,0.04);border-left:4px solid #667eea;border-radius:12px;padding:16px;margin-bottom:20px}
+.dialogue-box .speaker{font-size:0.7rem;color:rgba(255,255,255,0.3);margin-bottom:6px}
+.dialogue-box .words{font-size:1rem;line-height:1.6;color:rgba(255,255,255,0.85)}
+.diff-select{display:flex;gap:10px;margin-bottom:20px}
+.diff-card{flex:1;background:rgba(255,255,255,0.06);border-radius:14px;padding:16px 8px;text-align:center;cursor:pointer;border:2px solid transparent;transition:all .3s}
+.diff-card:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-3px)}
+.diff-card.selected{border-color:#667eea;background:rgba(102,126,234,0.15)}
+.diff-card .diff-icon{font-size:1.6rem;display:block;margin-bottom:4px}
+.diff-card .diff-name{font-size:0.9rem;font-weight:600;margin-bottom:2px}
+.diff-card .diff-desc{font-size:0.6rem;color:rgba(255,255,255,0.5)}
+/* Battle */
 .battle-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .opponent-info{text-align:center;flex:1}
 .opponent-info .emoji{font-size:3rem;display:block}
@@ -39,111 +54,107 @@ h1{font-size:2rem;text-align:center;margin-bottom:8px;background:linear-gradient
 .hp-label{font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:4px}
 .hp-bar-wrap{background:rgba(255,255,255,0.1);border-radius:10px;height:16px;overflow:hidden;position:relative}
 .hp-bar{height:100%;border-radius:10px;transition:width .5s ease;background:linear-gradient(90deg,#f5576c,#ff6b6b)}
-.hp-bar.player-hp{background:linear-gradient(90deg,#667eea,#45b7d1)}
 .hp-text-num{font-size:0.7rem;margin-top:2px}
 .vs-text{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0 12px}
-.question-area{background:rgba(255,255,255,0.05);border-radius:16px;padding:20px;margin-bottom:16px;text-align:center}
-.q-type{font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.q-text{font-size:1.05rem;line-height:1.6;margin-bottom:6px}
-.q-hint{font-size:0.8rem;color:rgba(255,255,255,0.4);font-style:italic}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.choice{background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;font-size:0.95rem;color:#fff}
+.player-status{display:flex;justify-content:center;gap:6px;margin-top:12px}
+.heart{font-size:1.3rem;transition:all .3s}
+.heart.lost{opacity:0.2;transform:scale(0.8)}
+.question-area{background:rgba(255,255,255,0.05);border-radius:16px;padding:18px;margin-bottom:14px;text-align:center}
+.q-type{font-size:0.7rem;color:rgba(255,255,255,0.35);letter-spacing:1px;margin-bottom:6px}
+.q-text{font-size:1rem;line-height:1.6;margin-bottom:4px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.choice{background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:all .2s;font-size:0.9rem;color:#fff}
 .choice:hover{background:rgba(255,255,255,0.15);border-color:#667eea}
 .choice.correct{background:rgba(76,175,80,0.3);border-color:#4caf50;animation:pulse .4s}
 .choice.wrong{background:rgba(244,67,54,0.3);border-color:#f44336;animation:shake .4s}
 .choice:disabled{cursor:not-allowed;opacity:0.7}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-.player-status{display:flex;justify-content:center;gap:6px;margin-top:12px}
-.heart{font-size:1.3rem;transition:all .3s}
-.heart.lost{opacity:0.2;transform:scale(0.8)}
-.round-info{text-align:center;font-size:0.8rem;color:rgba(255,255,255,0.4);margin-bottom:12px}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.progress-text{font-size:0.8rem;color:rgba(255,255,255,0.4)}
+.timer-bar{height:4px;background:rgba(255,255,255,0.1);border-radius:4px;margin-bottom:10px;overflow:hidden}
+.timer-bar-inner{height:100%;background:linear-gradient(90deg,#667eea,#f5576c);border-radius:4px;transition:width 1s linear;width:100%}
+.taunt-box{background:rgba(255,255,255,0.03);border-left:3px solid #f5576c;border-radius:8px;padding:10px 14px;margin-bottom:12px;animation:fadeIn .3s}
+.taunt-box .taunt-speaker{font-size:0.65rem;color:rgba(255,255,255,0.25);margin-bottom:2px}
+.taunt-box .taunt-text{font-size:0.9rem;color:rgba(255,255,255,0.75);font-style:italic}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .result-screen{text-align:center;padding:20px 0}
 .result-screen .big-emoji{font-size:5rem;display:block;margin-bottom:12px}
 .result-screen .result-title{font-size:1.6rem;font-weight:700;margin-bottom:8px}
-.result-screen .result-sub{color:rgba(255,255,255,0.6);margin-bottom:20px}
+.result-screen .result-sub{color:rgba(255,255,255,0.6);margin-bottom:16px}
 .unlock-msg{background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.3);border-radius:12px;padding:12px;margin-bottom:16px;font-size:0.9rem;animation:glow 1.5s infinite alternate}
 @keyframes glow{from{box-shadow:0 0 8px rgba(255,193,7,0.2)}to{box-shadow:0 0 20px rgba(255,193,7,0.4)}}
 .btn-group{display:flex;gap:10px;flex-wrap:wrap}
 .btn-group .btn{flex:1;min-width:120px}
-.timer-bar{height:4px;background:rgba(255,255,255,0.1);border-radius:4px;margin-bottom:12px;overflow:hidden}
-.timer-bar-inner{height:100%;background:linear-gradient(90deg,#667eea,#f5576c);border-radius:4px;transition:width 1s linear;width:100%}
-.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.progress-text{font-size:0.8rem;color:rgba(255,255,255,0.4)}
 .boss-reveal{animation:bossReveal 1s ease}
 @keyframes bossReveal{0%{transform:scale(0) rotate(-180deg);opacity:0}60%{transform:scale(1.2) rotate(10deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
-.diff-select{display:flex;gap:12px;margin-bottom:24px}
-.diff-card{flex:1;background:rgba(255,255,255,0.06);border-radius:16px;padding:20px 12px;text-align:center;cursor:pointer;border:2px solid transparent;transition:all .3s}
-.diff-card:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-4px)}
-.diff-card.selected{border-color:#667eea;background:rgba(102,126,234,0.15)}
-.diff-card .diff-icon{font-size:2rem;display:block;margin-bottom:6px}
-.diff-card .diff-name{font-size:1rem;font-weight:600;margin-bottom:4px}
-.diff-card .diff-desc{font-size:0.7rem;color:rgba(255,255,255,0.5)}
-.boss-dialog{background:linear-gradient(135deg,rgba(240,147,251,0.1),rgba(245,87,108,0.1));border:1px solid rgba(240,147,251,0.3);border-radius:12px;padding:16px;margin-bottom:16px;text-align:center}
-.boss-dialog .boss-says{font-size:0.7rem;color:rgba(255,255,255,0.3);margin-bottom:4px}
-.boss-dialog .boss-text{font-size:1rem;line-height:1.5;color:#f093fb}
-.mock-text{font-size:0.8rem;color:#ff6b6b;font-style:italic;margin-top:6px;animation:fadeIn .3s}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.char-taunt{font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:6px;font-style:italic}
 </style>
 </head>
 <body>
 <div class="container" id="app">
-  <!-- Start Screen -->
   <div class="screen active" id="screen-start">
     <h1>⚔️ Lexicon Arena</h1>
-    <p class="subtitle">情境英文競技場 — 用生活英文擊敗所有對手！</p>
+    <p class="subtitle">情境英文競技場 — 挑選對手、選擇難度、證明你的英文實力！</p>
     <div style="text-align:center;margin-bottom:24px">
       <div style="font-size:4rem;margin-bottom:12px">🌍</div>
       <p style="color:rgba(255,255,255,0.7);font-size:0.95rem;line-height:1.7">
         題目是真實生活情境（餐廳、旅行、職場、購物...），<br>
-        選出最適合的英文回應或單字。<br>
-        自由選擇對手，全部擊敗後解鎖 BOSS 史丹利！<br>
-        <span style="color:#f5576c">Hint：史丹利很會嘲諷人，答錯做好心理準備 😏</span>
+        選出最適合的英文回應。<br>
+        每位對手都有獨特的語氣和個性！<br>
+        <span style="color:#f5576c">擊敗全部 9 位解鎖 BOSS 史丹利 😏</span>
       </p>
     </div>
-    <button class="btn" onclick="showDiffSelect()">開始挑戰</button>
+    <button class="btn" onclick="showCharSelect()">開始挑戰</button>
   </div>
 
-  <!-- Difficulty Select -->
-  <div class="screen" id="screen-diff">
-    <h1>🎯 選擇難度</h1>
-    <p class="subtitle">題目會根據難度調整</p>
-    <div class="diff-select">
-      <div class="diff-card" onclick="selectDifficulty('easy')" id="diff-easy">
-        <span class="diff-icon">🌱</span>
-        <div class="diff-name">簡單</div>
-        <div class="diff-desc">基礎生活會話<br>餐廳、購物、問候</div>
-      </div>
-      <div class="diff-card" onclick="selectDifficulty('medium')" id="diff-medium">
-        <span class="diff-icon">🔥</span>
-        <div class="diff-name">中等</div>
-        <div class="diff-desc">職場、旅遊、社交<br>日常慣用語</div>
-      </div>
-      <div class="diff-card" onclick="selectDifficulty('hard')" id="diff-hard">
-        <span class="diff-icon">💀</span>
-        <div class="diff-name">困難</div>
-        <div class="diff-desc">俚語、片語、文化梗<br>母語者等級</div>
-      </div>
-    </div>
+  <div class="screen" id="screen-char">
+    <h1>👥 選擇對手</h1>
+    <p class="subtitle" id="charSubtitle">點選對手，然後選擇難度開始對戰</p>
+    <div class="character-grid" id="charGrid"></div>
     <button class="btn btn-secondary" onclick="showStart()">← 返回</button>
   </div>
 
-  <!-- Character Select -->
-  <div class="screen" id="screen-char">
-    <h1>👥 選擇對手</h1>
-    <p class="subtitle" id="charSubtitle">擊敗全部 9 位解鎖 BOSS</p>
-    <div class="character-grid" id="charGrid"></div>
-    <button class="btn btn-secondary" onclick="showDiffSelect()">← 返回</button>
+  <div class="screen" id="screen-intro">
+    <div class="intro-display">
+      <span class="big-emoji" id="introEmoji">🔔</span>
+      <div class="name" id="introName">叮噹哥</div>
+      <div class="title" id="introTitle">稱號</div>
+      <div class="hp" id="introHp">HP 3</div>
+    </div>
+    <div class="dialogue-box">
+      <div class="speaker">💬 對方說話了：</div>
+      <div class="words" id="introDialogue">來吧！</div>
+    </div>
+    <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:10px">選擇難度開始對戰</p>
+    <div class="diff-select">
+      <div class="diff-card" onclick="pickDifficulty('easy')" id="intro-diff-easy">
+        <span class="diff-icon">🌱</span>
+        <div class="diff-name">簡單</div>
+        <div class="diff-desc">基礎生活會話</div>
+      </div>
+      <div class="diff-card" onclick="pickDifficulty('medium')" id="intro-diff-medium">
+        <span class="diff-icon">🔥</span>
+        <div class="diff-name">中等</div>
+        <div class="diff-desc">職場旅遊社交</div>
+      </div>
+      <div class="diff-card" onclick="pickDifficulty('hard')" id="intro-diff-hard">
+        <span class="diff-icon">💀</span>
+        <div class="diff-name">困難</div>
+        <div class="diff-desc">俚語文化片語</div>
+      </div>
+    </div>
+    <button class="btn" onclick="startBattleWithDiff()">⚔️ 開始對戰</button>
+    <button class="btn btn-secondary" onclick="showCharSelect()" style="margin-top:8px">← 返回選單</button>
   </div>
 
-  <!-- Battle Screen -->
   <div class="screen" id="screen-battle">
     <div class="top-bar">
       <span class="progress-text" id="progressText">第 1 / 5 題</span>
       <span style="font-size:0.8rem;color:rgba(255,255,255,0.4)">⏱ <span id="timerDisplay">15</span>s</span>
     </div>
-    <div class="timer-bar"><div class="timer-bar-inner" id="timerBar"></div></div>
-    <div id="bossDialogArea"></div>
+    <div class="timer-bar"><div class="timer-bar-inner" id="timerBar" style="width:100%"></div></div>
+    <div id="tauntArea"></div>
     <div class="battle-header">
       <div class="player-status" id="playerHearts"></div>
       <div class="vs-text">⚡</div>
@@ -159,17 +170,15 @@ h1{font-size:2rem;text-align:center;margin-bottom:8px;background:linear-gradient
       <div class="hp-text-num" id="enemyHpText">10 / 10</div>
     </div>
     <div class="question-area">
-      <div class="q-type" id="qType">情境</div>
+      <div class="q-type" id="qType">📌 情境</div>
       <div class="q-text" id="qText">Loading...</div>
     </div>
     <div class="choices" id="choices"></div>
-    <div id="mockArea"></div>
-    <div style="text-align:center;margin-top:6px">
+    <div style="text-align:center;margin-top:4px">
       <span style="font-size:0.75rem;color:rgba(255,255,255,0.3)" id="feedbackMsg"></span>
     </div>
   </div>
 
-  <!-- Result Screen -->
   <div class="screen" id="screen-result">
     <div class="result-screen">
       <span class="big-emoji" id="resultEmoji">🎉</span>
@@ -183,11 +192,10 @@ h1{font-size:2rem;text-align:center;margin-bottom:8px;background:linear-gradient
     </div>
   </div>
 
-  <!-- Victory Screen -->
   <div class="screen" id="screen-victory">
     <div class="result-screen">
       <span class="big-emoji" id="victoryEmoji">🏆</span>
-      <div class="result-title" id="victoryTitle">你贏了！</div>
+      <div class="result-title" id="victoryTitle">恭喜！</div>
       <div class="result-sub" id="victorySub">全部通關！</div>
       <div id="victoryExtra"></div>
       <div class="btn-group" style="margin-top:20px">
@@ -198,34 +206,97 @@ h1{font-size:2rem;text-align:center;margin-bottom:8px;background:linear-gradient
 </div>
 
 <script>
-const CHARACTERS = [
-  {id:'dingdang',name:'叮噹哥',title:'閒聊高手',emoji:'🔔',hp:3},
-  {id:'linger',name:'鈴兒',title:'鈴聲清脆',emoji:'🔊',hp:4},
-  {id:'shaoyun',name:'少云老師',title:'博學多聞',emoji:'👨‍🏫',hp:5},
-  {id:'qinshihuang',name:'秦始皇',title:'千古一帝',emoji:'👑',hp:6},
-  {id:'tigress',name:'母老虎',title:'霸氣凜然',emoji:'🐯',hp:7},
-  {id:'rongrong',name:'榮榮兒',title:'時尚達人',emoji:'💅',hp:8},
-  {id:'qijie',name:'綺姐',title:'優雅貴族',emoji:'🌹',hp:9},
-  {id:'karen',name:'凱倫',title:'職場菁英',emoji:'💼',hp:10},
-  {id:'xinger',name:'星兒',title:'閃耀新星',emoji:'⭐',hp:12},
-];
-const BOSS = {id:'stanley',name:'史丹利',title:'詞彙魔王',emoji:'🦹',hp:16};
+const CHAR_DATA = {
+  dingdang:{
+    name:'叮噹哥',title:'閒聊高手',emoji:'🔔',hp:3,
+    intro:'喔～又有人來挑戰了耶！放輕鬆玩啦，開心最重要！',
+    correct:['喔不錯喔！有點東西嘛！','厲害耶！再來再來！','喔～這題你會？我小看你了！'],
+    wrong:['耶？這題不難啊，再想想啦～','沒關係啦，下一題下一題！','啊～差一點點耶！'],
+    win:'耶～贏了！你還要多練練喔！加油加油！',
+    lose:'哇塞你真的不錯耶！下次再來玩啦！'
+  },
+  linger:{
+    name:'鈴兒',title:'鈴聲清脆',emoji:'🔊',hp:4,
+    intro:'來來來～讓我聽聽你的英文好不好聽、厲不厲害！',
+    correct:['哇～好厲害！','答對了耶！你好棒！','鈴～又答對了！'],
+    wrong:['哎呀好可惜喔！再試一次！','這題我也覺得有點難啦～','沒關係！下次就會了！'],
+    win:'鈴鈴鈴～贏了！你還有得學呢～加油！',
+    lose:'你很強耶！下次我一定會更努力～！'
+  },
+  shaoyun:{
+    name:'少云老師',title:'博學多聞',emoji:'👨‍🏫',hp:5,
+    intro:'很好，又有一位學生來求教了。讓我來看看你的程度在哪裡呢？',
+    correct:['嗯，不錯。看來你有認真學習。','正確。你的基礎很紮實呢。','很好，這個用法你用對了。'],
+    wrong:['這個用法要注意呢。讓我為你講解一下...','可惜了，再想想看，你應該會的。','這裡是常見的誤區，要多注意呢。'],
+    win:'學無止境，回去多讀點書再來吧。',
+    lose:'非常好，你已經通過了這場測驗。繼續保持這樣的態度。'
+  },
+  qinshihuang:{
+    name:'秦始皇',title:'千古一帝',emoji:'👑',hp:6,
+    intro:'大膽！區區小民也敢挑戰朕？來吧，讓寡人看看你的本事！',
+    correct:['嗯，算你有點見識。','不錯，朕准許你繼續作答。','哼，尚有可取之處。'],
+    wrong:['大膽！這等簡單問題都不會？來人啊！','荒謬！這題也能錯？','朕甚感失望。'],
+    win:'哈哈哈！就這點程度也敢挑戰朕？不自量力！',
+    lose:'什麼？！朕...竟然輸了？！退下，讓朕靜一靜。'
+  },
+  tigress:{
+    name:'母老虎',title:'霸氣凜然',emoji:'🐯',hp:7,
+    intro:'少廢話。直接開始。答錯你就知道了。',
+    correct:['還可以。下一題。','行。繼續。','廢話少說，繼續。'],
+    wrong:['這題不會？你認真？','這種題目也錯？','你到底行不行？'],
+    win:'就這？回去練練再來。別浪費我時間。',
+    lose:'你行。下次我會贏。走了。'
+  },
+  rongrong:{
+    name:'榮榮兒',title:'時尚達人',emoji:'💅',hp:8,
+    intro:'欸～你確定要挑戰我嗎？我最近可是很～厲害的喔！做好心理準備了沒～',
+    correct:['還不賴嘛～果然我的眼光沒錯！','喔～有兩下子喔！','不錯耶～你今天穿得也很好看（離題'],
+    wrong:['這題都錯～好吧沒關係啦，誰叫我太耀眼讓你分心了呢～','哎呦～這題是陷阱啦！','沒關係啦～誰沒有過去呢～'],
+    win:'唉唷～這就是你的實力嗎？我有點失望耶～不過沒關係啦！',
+    lose:'什麼？！我竟然...沒關係！今天狀態不好啦！下次你就知道了～'
+  },
+  qijie:{
+    name:'綺姐',title:'優雅貴族',emoji:'🌹',hp:9,
+    intro:'歡迎。希望你能讓這場對弈變得有趣，不要讓我失望了。',
+    correct:['不錯，思路清晰。','很好的判斷。','你的程度比我想像中好。'],
+    wrong:['可惜了。以你的能力不該答錯這題。','再想想。你應該知道這個答案。','失誤了。調整好心態。'],
+    win:'看來還需要多加歷練。期待你下次的表現。',
+    lose:'我輸了。你的表現令人印象深刻，我記住你了。'
+  },
+  karen:{
+    name:'凱倫',title:'職場菁英',emoji:'💼',hp:10,
+    intro:'Let's get this done. 我的時間很寶貴，直接開始吧。',
+    correct:['Good. Next.','Correct. Keep going.','On point. Moving on.'],
+    wrong:["That's not correct. Let's move on.","Incorrect. We're on a deadline.","Focus. You know this."],
+    win:"Time's up. Better luck next time. I have a meeting.",
+    lose:"Impressive. You've earned my respect. Let's circle back later."
+  },
+  xinger:{
+    name:'星兒',title:'閃耀新星',emoji:'⭐',hp:12,
+    intro:'你來了呀～我等你好久了呢！星星說今天你會很厲害喔～快開始吧！',
+    correct:['哇～星星沒有騙我！你好棒！','好厲害！星星都在為你閃爍呢！','太強了～你果然是星星選中的人！'],
+    wrong:['沒關係的～星星說失誤也是成長的一部分呢！','哎呀～這題星星也沒告訴我答案呢～','別灰心～下一題星星會幫你的！'],
+    win:'今天星星站在我這邊呢～下次加油喔！回去多看點書～',
+    lose:'好厲害...星星都在為你歡呼呢！我輸得心服口服！'
+  },
+  stanley:{
+    name:'史丹利',title:'詞彙魔王',emoji:'🦹',hp:16,
+    intro:'喔？能來到這裡，看來你不只是個花瓶嘛。可惜，你遇到的是我——史丹利。準備好被幽默打敗了嗎？😏',
+    correct:['喔～不錯嘛！我承認這題你有資格跟我呼吸同一層的空氣。','厲害厲害～我差點就要認真起來了。','水喔～這題你竟然會，我給過。'],
+    wrong:['哈哈哈！這題你都不會？我推薦你去報名我的英文入門班⋯⋯我是說，如果有的話～','笑死，我阿嬤都會這題。','你認真的表情配上這個答案真是經典，我會記住這一刻的。','天啊～你到底是來挑戰我還是來娛樂我的？','不錯喔——我是說你的勇氣不錯。答案嘛⋯⋯嗯。','我該從哪裡開始吐槽好呢？這題真的有難度嗎？難度在於你居然選了錯的？'],
+    win:'我該說什麼好呢？我連嘲諷你都懶了。真的。去練練再來吧，帥哥也救不了你。',
+    lose:'（微笑鼓掌）好吧，你贏了。我得承認，你確實有兩下子。但我會回來的，因為我除了帥，還很持久。😏'
+  }
+};
 
-const BOSS_MOCKS = [
-  '😂 這題都不會？你認真的嗎？',
-  '🤣 笑死，我阿嬤都會這題！',
-  '😏 不錯喔～我是說你的勇氣不錯，答案嘛...嗯。',
-  '💀 我開始懷疑你是來搞笑的還是來挑戰的',
-  '🤡 建議你轉行，真的。',
-  '😎 簡單到我都不想笑了...但還是笑了，哈哈哈！',
-  '🔥 這程度也想挑戰我？回去練練吧～',
-  '💅 你認真的表情配上這個答案真是經典',
-  '🙄 我已經不知道該從哪裡吐槽起了',
-  '😏 水準不錯，跟我國小的時候差不多',
+const CHARACTERS = [
+  {id:'dingdang',unlock:0},{id:'linger',unlock:1},{id:'shaoyun',unlock:2},
+  {id:'qinshihuang',unlock:3},{id:'tigress',unlock:4},{id:'rongrong',unlock:5},
+  {id:'qijie',unlock:6},{id:'karen',unlock:7},{id:'xinger',unlock:8}
 ];
+const BOSS_ID = 'stanley';
 
 const QUESTIONS = [
-  // === EASY ===
   {situation:'在餐廳，服務生問 "Are you ready to order?"',question:'你該怎麼回應？',answer:"I'll have the pasta, please.",options:["I'll have the pasta, please.","Yes, I'm ordering.","Give me food.","What do you have?"],diff:'easy'},
   {situation:'朋友祝你 "Happy birthday!"',question:'你該怎麼回應？',answer:"Thank you so much!",options:["Thank you so much!","You too!","No problem.","I know."],diff:'easy'},
   {situation:'在超商結帳，店員說 "Would you like a bag?"',question:'你該如何回應？（要袋子）',answer:"Yes, please.",options:["Yes, please.","Give me bag.","I want.","OK you give."],diff:'easy'},
@@ -238,7 +309,6 @@ const QUESTIONS = [
   {situation:'朋友問 "Do you want some coffee?"',question:'拒絕但保持禮貌的說法是？',answer:"No thanks, I'm good.",options:["No thanks, I'm good.","I don't want.","No.","I hate coffee."],diff:'easy'},
   {situation:'對方說 "Thank you" 時',question:'最常見的回應是？',answer:"You're welcome!",options:["You're welcome!","Yes.","OK.","Thank you too."],diff:'easy'},
   {situation:'你要插話打斷對話',question:'最客氣的說法是？',answer:"Sorry to interrupt, but...",options:["Sorry to interrupt, but...","Stop! Listen to me!","Hey!","I want to talk."],diff:'easy'},
-  // === MEDIUM ===
   {situation:'同事說 "I'm swamped with work"',question:'意思是？',answer:'他忙翻了',options:['他忙翻了','他被火燒到了','他在划水','他辭職了'],diff:'medium'},
   {situation:'主管在會議中說 "Let's touch base tomorrow"',question:'意思是？',answer:'明天簡短討論一下',options:['明天簡短討論一下','明天見面握手','明天去基地','明天踢足球'],diff:'medium'},
   {situation:'同事說 "I'll CC you on that email"',question:'意思是？',answer:'他會把 email 副本寄給你',options:['他會把 email 副本寄給你','他會把碳紙給你','他會抄寫 email 給你','他會在 email 上標註你'],diff:'medium'},
@@ -252,8 +322,7 @@ const QUESTIONS = [
   {situation:'朋友說 "That's a rip-off!"',question:'意思是？',answer:'這太貴了/坑人的價格',options:['這太貴了/坑人的價格','那是撕開的','被扯破了','那是贈品'],diff:'medium'},
   {situation:'同事意味深長地說 "I see..."',question:'通常表達什麼語氣？',answer:'懂了（但保留態度或不以為然）',options:['懂了（但保留態度或不以為然）','我看見了','我視力很好','再見'],diff:'medium'},
   {situation:'你要提前離開聚會',question:'最自然的說法是？',answer:"I think I'm gonna head out. Thanks for having me!",options:["I think I'm gonna head out. Thanks for having me!","I must leave now. Goodbye.","I'm going home.","Bye bye."],diff:'medium'},
-  {situation:'有人跟你抱怨一堆，你想說「辛苦了」',question:'最接近的英文是？',answer:"That sounds rough. Hang in there!",options:["That sounds rough. Hang in there!","Hard work!","You're tired.","Very辛苦."],diff:'medium'},
-  // === HARD ===
+  {situation:'有人跟你抱怨一堆',question:'你想說「辛苦了」，最接近的英文是？',answer:"That sounds rough. Hang in there!",options:["That sounds rough. Hang in there!","Hard work!","You're tired.","Very辛苦."],diff:'medium'},
   {situation:'同事說 "He threw me under the bus"',question:'意思是？',answer:'他出賣了我/讓我背黑鍋',options:['他出賣了我/讓我背黑鍋','他把我丟到公車底下','他幫了我一把','他載我去搭公車'],diff:'hard'},
   {situation:'主管說 "Don't put all your eggs in one basket"',question:'意思是？',answer:'不要把資源全部放在同一個地方',options:['不要把資源全部放在同一個地方','不要把雞蛋放同個籃子（物理）','不要買雞蛋','籃子太小了'],diff:'hard'},
   {situation:'對方說 "I'll take a rain check"',question:'意思是？',answer:'這次不行，改天再約',options:['這次不行，改天再約','我要去檢查下雨','我要拿雨傘','我喜歡下雨天'],diff:'hard'},
@@ -276,9 +345,10 @@ const TIME_LIMIT = 15;
 
 let state = {
   screen:'start',
-  diff:'easy',
   cleared:[],
   bossUnlocked:false,
+  pendingChar:null,
+  pendingDiff:'easy',
   currentChar:null,
   isBoss:false,
   lives:MAX_LIVES,
@@ -286,72 +356,68 @@ let state = {
   questions:[],
   answered:false,
   timer:null,
-  timeLeft:TIME_LIMIT,
-  totalCleared:0
+  timeLeft:TIME_LIMIT
 };
 
-function shuffle(arr){for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-
 function showStart(){resetGame();showScreen('screen-start')}
-
-function showDiffSelect(){
-  state.screen='diff';
-  showScreen('screen-diff');
-  document.querySelectorAll('.diff-card').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('diff-'+state.diff).classList.add('selected');
-}
-
-function selectDifficulty(d){
-  state.diff=d;
-  document.querySelectorAll('.diff-card').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('diff-'+d).classList.add('selected');
-  state.cleared=[];
-  state.bossUnlocked=false;
-  state.totalCleared=0;
-  showCharSelect();
-}
 
 function showCharSelect(){
   state.screen='char';
   showScreen('screen-char');
-  const sub=document.getElementById('charSubtitle');
-  const diffs={easy:'🌱 簡單',medium:'🔥 中等',hard:'💀 困難'};
-  sub.textContent=`難度：${diffs[state.diff]} ｜ 擊敗全部 9 位解鎖 BOSS`;
   renderCharGrid();
 }
 
 function renderCharGrid(){
   const grid=document.getElementById('charGrid');
   let html='';
-  const allChars=[...CHARACTERS,BOSS];
-  allChars.forEach(c=>{
-    const isBoss=c.id===BOSS.id;
+  [...CHARACTERS,{id:BOSS_ID}].forEach(c=>{
+    const d=c.id===BOSS_ID?CHAR_DATA.stanley:CHAR_DATA[c.id];
+    const isBoss=c.id===BOSS_ID;
     const isCleared=state.cleared.includes(c.id);
     const isLocked=isBoss && state.cleared.length<9;
     const cls=['char-card'];
     if(isCleared)cls.push('cleared');
-    if(isLocked)cls.push('locked-boss');
-    if(isLocked && !isCleared)cls.push('locked');
-    html+=`<div class="${cls.join(' ')}" onclick="selectChar('${c.id}')">
+    if(isLocked)cls.push('locked');
+    html+=`<div class="${cls.join(' ')}" onclick="openIntro('${c.id}')">
       ${isBoss?'<span class="boss-badge">BOSS</span>':''}
-      <span class="emoji">${c.emoji}</span>
-      <div class="name">${c.name}</div>
-      <div class="title">${c.title}</div>
-      <div class="hp-text">HP ${c.hp}</div>
+      <span class="emoji">${d.emoji}</span>
+      <div class="name">${d.name}</div>
+      <div class="title">${d.title}</div>
+      <div class="hp-text">HP ${d.hp}</div>
     </div>`;
   });
   grid.innerHTML=html;
 }
 
-function selectChar(id){
-  const allChars=[...CHARACTERS,BOSS];
-  const char=allChars.find(c=>c.id===id);
-  if(!char)return;
-  if(char.id===BOSS.id && state.cleared.length<9)return;
+function openIntro(id){
+  if(id===BOSS_ID && state.cleared.length<9)return;
   if(state.cleared.includes(id))return;
-  startBattle(char);
+  const d=id===BOSS_ID?CHAR_DATA.stanley:CHAR_DATA[id];
+  state.pendingChar=id;
+  state.pendingDiff='easy';
+  showScreen('screen-intro');
+  document.getElementById('introEmoji').textContent=d.emoji;
+  document.getElementById('introName').textContent=d.name;
+  document.getElementById('introTitle').textContent=d.title;
+  document.getElementById('introHp').textContent='HP '+d.hp;
+  document.getElementById('introDialogue').textContent=d.intro;
+  document.querySelectorAll('#screen-intro .diff-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('intro-diff-easy').classList.add('selected');
+}
+
+function pickDifficulty(d){
+  state.pendingDiff=d;
+  document.querySelectorAll('#screen-intro .diff-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('intro-diff-'+d).classList.add('selected');
+}
+
+function startBattleWithDiff(){
+  if(!state.pendingChar)return;
+  startBattle(state.pendingChar,state.pendingDiff);
 }
 
 function getWordBank(diff){
@@ -362,37 +428,37 @@ function getWordBank(diff){
   return shuffle(pool).slice(0,Q_PER_ROUND);
 }
 
-function startBattle(char){
-  state.currentChar=char;
-  state.isBoss=char.id===BOSS.id;
+function startBattle(id,diff){
+  const isBoss=id===BOSS_ID;
+  const d=isBoss?CHAR_DATA.stanley:CHAR_DATA[id];
+  state.currentChar={id,name:d.name,title:d.title,emoji:d.emoji,hp:d.hp,data:d};
+  state.isBoss=isBoss;
   state.lives=MAX_LIVES;
   state.roundNum=0;
   state.answered=false;
   state.screen='battle';
   showScreen('screen-battle');
-  state.questions=getWordBank(state.diff);
-  document.getElementById('battleEmoji').textContent=char.emoji;
-  document.getElementById('battleName').textContent=char.name;
-  document.getElementById('battleTitle').textContent=char.title;
-  document.getElementById('bossDialogArea').innerHTML='';
+  state.questions=getWordBank(diff);
+  document.getElementById('battleEmoji').textContent=d.emoji;
+  document.getElementById('battleName').textContent=d.name;
+  document.getElementById('battleTitle').textContent=d.title;
+  document.getElementById('tauntArea').innerHTML='';
   renderHearts();
   renderEnemyHp();
   nextRound();
 }
 
 function renderHearts(){
-  const container=document.getElementById('playerHearts');
-  let html='';
-  for(let i=0;i<MAX_LIVES;i++)html+=`<span class="heart ${i<state.lives?'':'lost'}">❤️</span>`;
-  container.innerHTML=html;
+  const c=document.getElementById('playerHearts');
+  let h='';
+  for(let i=0;i<MAX_LIVES;i++)h+=`<span class="heart ${i<state.lives?'':'lost'}">❤️</span>`;
+  c.innerHTML=h;
 }
 
 function renderEnemyHp(){
   const hp=state.currentChar.hp;
-  const correctCount=state.questions.filter((_,i)=>i<state.roundNum).reduce((sum,_,i)=>sum+(state._lastCorrect?1:0),0);
   const curHp=Math.max(0,hp-state.roundNum);
-  const pct=(curHp/hp)*100;
-  document.getElementById('enemyHpBar').style.width=pct+'%';
+  document.getElementById('enemyHpBar').style.width=(curHp/hp*100)+'%';
   document.getElementById('enemyHpText').textContent=`${curHp} / ${hp}`;
 }
 
@@ -402,7 +468,7 @@ function nextRound(){
     else{showLose();return}
   }
   state.answered=false;
-  document.getElementById('mockArea').innerHTML='';
+  document.getElementById('tauntArea').innerHTML='';
   const q=state.questions[state.roundNum];
   document.getElementById('progressText').textContent=`第 ${state.roundNum+1} / ${Q_PER_ROUND} 題`;
   document.getElementById('qType').textContent='📌 情境';
@@ -411,8 +477,7 @@ function nextRound(){
   renderEnemyHp();
   const choices=document.getElementById('choices');
   choices.innerHTML='';
-  const opts=shuffle([...q.options]);
-  opts.forEach(o=>{
+  shuffle([...q.options]).forEach(o=>{
     const btn=document.createElement('div');
     btn.className='choice';
     btn.textContent=o;
@@ -430,111 +495,86 @@ function startTimer(){
   state.timer=setInterval(()=>{
     state.timeLeft--;
     document.getElementById('timerDisplay').textContent=state.timeLeft;
-    const pct=(state.timeLeft/TIME_LIMIT)*100;
-    document.getElementById('timerBar').style.width=Math.max(0,pct)+'%';
-    if(state.timeLeft<=0){
-      clearInterval(state.timer);
-      if(!state.answered)handleTimeout();
-    }
+    document.getElementById('timerBar').style.width=Math.max(0,(state.timeLeft/TIME_LIMIT)*100)+'%';
+    if(state.timeLeft<=0&&!state.answered){clearInterval(state.timer);handleTimeout()}
   },1000);
 }
 
 function handleTimeout(){
   if(state.answered)return;
-  state.answered=true;
-  state._lastCorrect=false;
-  state.lives--;
-  renderHearts();
+  state.answered=true;state._lastCorrect=false;state.lives--;renderHearts();
   document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
-  document.getElementById('feedbackMsg').textContent='⏰ 時間到！';
-  document.getElementById('feedbackMsg').style.color='#f44336';
-  showBossMock();
-  setTimeout(()=>{
-    if(state.lives<=0){showLose();return}
-    state.roundNum++;
-    nextRound();
-  },1800);
-}
-
-function getBossMock(){
-  return BOSS_MOCKS[Math.floor(Math.random()*BOSS_MOCKS.length)];
-}
-
-function showBossMock(){
-  if(!state.isBoss)return;
-  const area=document.getElementById('mockArea');
-  area.innerHTML=`<div class="mock-text">${getBossMock()}</div>`;
+  document.getElementById('feedbackMsg').textContent='⏰ 時間到！';document.getElementById('feedbackMsg').style.color='#f44336';
+  showTaunt('wrong');
+  setTimeout(()=>{if(state.lives<=0){showLose();return}state.roundNum++;nextRound()},1600);
 }
 
 function handleAnswer(btn,q,ans){
   if(state.answered)return;
-  state.answered=true;
-  clearInterval(state.timer);
+  state.answered=true;clearInterval(state.timer);
   document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
   const correct=ans===q.answer;
   state._lastCorrect=correct;
   if(correct){
     btn.classList.add('correct');
-    document.getElementById('feedbackMsg').textContent='✅ 正確！';
-    document.getElementById('feedbackMsg').style.color='#4caf50';
+    document.getElementById('feedbackMsg').textContent='✅ 正確！';document.getElementById('feedbackMsg').style.color='#4caf50';
   }else{
-    btn.classList.add('wrong');
-    state.lives--;
-    renderHearts();
-    const correctBtn=Array.from(document.querySelectorAll('.choice')).find(b=>b.textContent===q.answer);
-    if(correctBtn)correctBtn.classList.add('correct');
-    document.getElementById('feedbackMsg').textContent=`❌ 正確答案是：${q.answer}`;
-    document.getElementById('feedbackMsg').style.color='#f44336';
-    showBossMock();
+    btn.classList.add('wrong');state.lives--;renderHearts();
+    const cb=Array.from(document.querySelectorAll('.choice')).find(b=>b.textContent===q.answer);
+    if(cb)cb.classList.add('correct');
+    document.getElementById('feedbackMsg').textContent='❌ 正確答案是：'+q.answer;document.getElementById('feedbackMsg').style.color='#f44336';
+    showTaunt('wrong');
   }
-  setTimeout(()=>{
-    if(state.lives<=0){showLose();return}
-    state.roundNum++;
-    nextRound();
-  },1400);
+  setTimeout(()=>{if(state.lives<=0){showLose();return}state.roundNum++;nextRound()},1400);
+}
+
+function showTaunt(type){
+  const d=state.currentChar.data;
+  if(!d[type])return;
+  const lines=d[type];
+  const text=Array.isArray(lines)?pick(lines):lines;
+  const area=document.getElementById('tauntArea');
+  area.innerHTML=`<div class="taunt-box"><div class="taunt-speaker">💬 ${d.name}：</div><div class="taunt-text">${text}</div></div>`;
 }
 
 function showWin(){
-  state.screen='result';
-  showScreen('screen-result');
+  state.screen='result';showScreen('screen-result');
+  const d=state.currentChar.data;
   document.getElementById('resultEmoji').textContent='🎉';
   document.getElementById('resultTitle').textContent='勝利！';
-  document.getElementById('resultSub').textContent=`你擊敗了 ${state.currentChar.name}！`;
-  state.totalCleared++;
-  if(!state.cleared.includes(state.currentChar.id))state.cleared.push(state.currentChar.id);
+  document.getElementById('resultSub').textContent=`你擊敗了 ${d.name}！`;
+  state.cleared.push(state.currentChar.id);
   const extra=document.getElementById('resultExtra');
-  if(state.cleared.length>=9 && !state.cleared.includes(BOSS.id)){
+  if(state.cleared.length>=9&&!state.cleared.includes(BOSS_ID)){
     extra.innerHTML=`<div class="unlock-msg boss-reveal">🦹 隱藏 BOSS 【史丹利】 現身了！！<br>一個幽默風趣又帥氣的男人等著調侃你 😏</div>`;
     state.bossUnlocked=true;
-  }else if(state.cleared.includes(BOSS.id)){
-    extra.innerHTML=`<div class="unlock-msg">🏆 你連史丹利都擊敗了！真正的英文大師！</div>`;
+  }else if(state.cleared.includes(BOSS_ID)){
+    extra.innerHTML=`<div class="unlock-msg">🏆 你連史丹利都擊敗了！<br>${d.lose}</div>`;
   }else{
-    extra.innerHTML='';
+    extra.innerHTML=`<div class="char-taunt">💬 ${d.name}：${d.win}</div>`;
   }
   document.getElementById('resultBtn').textContent=state.bossUnlocked?'挑戰 BOSS':'繼續';
 }
 
 function showLose(){
-  state.screen='result';
-  showScreen('screen-result');
+  state.screen='result';showScreen('screen-result');
+  const d=state.currentChar.data;
   document.getElementById('resultEmoji').textContent='💀';
   document.getElementById('resultTitle').textContent='敗北...';
-  const msg=state.isBoss?'史丹利露出滿意的笑容：「水準不錯，但還差得遠呢～」':'你被 ${state.currentChar.name} 擊敗了';
-  document.getElementById('resultSub').textContent=state.isBoss?msg:`你被 ${state.currentChar.name} 擊敗了`;
-  document.getElementById('resultExtra').innerHTML='<p style="color:rgba(255,255,255,0.5);font-size:0.9rem">再接再厲！</p>';
+  document.getElementById('resultSub').textContent=`你被 ${d.name} 擊敗了`;
+  document.getElementById('resultExtra').innerHTML=`<div class="char-taunt">💬 ${d.name}：${d.lose}</div>`;
   document.getElementById('resultBtn').textContent='再試一次';
 }
 
 function nextAfterResult(){
   const btn=document.getElementById('resultBtn');
-  if(btn.textContent==='再試一次'){startBattle(state.currentChar);return;}
-  if(state.cleared.includes(BOSS.id)){showVictory();return;}
+  if(btn.textContent==='再試一次'){startBattle(state.currentChar.id,state.pendingDiff);return;}
+  if(state.cleared.includes(BOSS_ID)){showVictory();return;}
   showCharSelect();
 }
 
 function showVictory(){
-  state.screen='victory';
-  showScreen('screen-victory');
+  state.screen='victory';showScreen('screen-victory');
   document.getElementById('victoryEmoji').textContent='🏆';
   document.getElementById('victoryTitle').textContent='恭喜通關！';
   document.getElementById('victorySub').textContent='你擊敗了所有挑戰者，包含那位幽默風趣又帥氣的史丹利！';
@@ -543,7 +583,7 @@ function showVictory(){
 
 function resetGame(){
   clearInterval(state.timer);
-  state={screen:'start',diff:'easy',cleared:[],bossUnlocked:false,currentChar:null,isBoss:false,lives:MAX_LIVES,roundNum:0,questions:[],answered:false,timer:null,timeLeft:TIME_LIMIT,totalCleared:0};
+  state={screen:'start',cleared:[],bossUnlocked:false,pendingChar:null,pendingDiff:'easy',currentChar:null,isBoss:false,lives:MAX_LIVES,roundNum:0,questions:[],answered:false,timer:null,timeLeft:TIME_LIMIT};
   showScreen('screen-start');
 }
 </script>
