@@ -265,7 +265,7 @@ const CHAR_DATA = {
   },
   karen:{
     name:'凱倫',title:'職場菁英',emoji:'💼',hp:10,
-    intro:'Let's get this done. 我的時間很寶貴，直接開始吧。',
+    intro:"Let's get this done. 我的時間很寶貴，直接開始吧。",
     correct:['Good. Next.','Correct. Keep going.','On point. Moving on.'],
     wrong:["That's not correct. Let's move on.","Incorrect. We're on a deadline.","Focus. You know this."],
     win:"Time's up. Better luck next time. I have a meeting.",
@@ -543,13 +543,14 @@ function showWin(){
   document.getElementById('resultEmoji').textContent='🎉';
   document.getElementById('resultTitle').textContent='勝利！';
   document.getElementById('resultSub').textContent=`你擊敗了 ${d.name}！`;
-  state.cleared.push(state.currentChar.id);
+  if(!state.cleared.includes(state.currentChar.id))state.cleared.push(state.currentChar.id);
   const extra=document.getElementById('resultExtra');
   if(state.cleared.length>=9&&!state.cleared.includes(BOSS_ID)){
     extra.innerHTML=`<div class="unlock-msg boss-reveal">🦹 隱藏 BOSS 【史丹利】 現身了！！<br>一個幽默風趣又帥氣的男人等著調侃你 😏</div>`;
     state.bossUnlocked=true;
   }else if(state.cleared.includes(BOSS_ID)){
     extra.innerHTML=`<div class="unlock-msg">🏆 你連史丹利都擊敗了！<br>${d.lose}</div>`;
+    state.bossUnlocked=false;
   }else{
     extra.innerHTML=`<div class="char-taunt">💬 ${d.name}：${d.win}</div>`;
   }
@@ -569,6 +570,7 @@ function showLose(){
 function nextAfterResult(){
   const btn=document.getElementById('resultBtn');
   if(btn.textContent==='再試一次'){startBattle(state.currentChar.id,state.pendingDiff);return;}
+  if(btn.textContent==='挑戰 BOSS'){openIntro(BOSS_ID);return;}
   if(state.cleared.includes(BOSS_ID)){showVictory();return;}
   showCharSelect();
 }
